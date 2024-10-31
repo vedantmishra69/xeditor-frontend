@@ -2,19 +2,41 @@ import { useState } from "react";
 import EditorComponent from "../components/EditorComponent";
 import { useCodeContext } from "../contexts/CodeEditorContext";
 import { LANGUAGE_MAPPING } from "../lib/constants";
+import { fetchResult, submitCode } from "../lib/util";
 
 const CodeEditorPage = () => {
   const [stdin, setStdin] = useState("");
   const [stdout, setStdout] = useState("");
-  const { language, setLanguage } = useCodeContext();
+  const [stderr, setStderr] = useState("");
+  const { language, setLanguage, sourceCode, setSourceCode } = useCodeContext();
 
   const handleStdin = (e) => setStdin(e.target.value);
-  const handleStdout = (e) => setStdout(e.target.value);
+  const handleLanguage = (name) => {
+    setLanguage(name);
+    setStdin("");
+    setStdout("");
+    setStderr("");
+    setSourceCode("");
+  };
+  const handleSubmit = async () => {
+    if (sourceCode) {
+      setStdout("Loading...");
+      const data = await submitCode(language, sourceCode, stdin);
+      if (!data.error && data.token) {
+        const result = await fetchResult(data.token);
+        if (result) {
+          setStdout(result.stdout ? atob(result.stdout) : "");
+          setStderr(result.stderr ? atob(result.stderr) : "");
+          return;
+        } else setStdout("Error");
+      }
+    }
+  };
 
   const languageOptions = [];
   for (const name in LANGUAGE_MAPPING) {
     languageOptions.push(
-      <option key={name} value={name} onClick={() => setLanguage(name)}>
+      <option key={name} value={name} onClick={() => handleLanguage(name)}>
         {name}
       </option>
     );
@@ -52,9 +74,24 @@ const CodeEditorPage = () => {
           <textarea
             id="stdout"
             value={stdout}
-            onChange={handleStdout}
             className="w-full h-20 p-4 bg-white border border-gray-300 rounded-lg resize-none"
             placeholder="Output will be displayed here..."
+            readOnly
+          ></textarea>
+        </div>
+
+        <div className="w-full max-w-3xl mb-4">
+          <label
+            className="block text-gray-700 font-semibold mb-2"
+            htmlFor="stderr"
+          >
+            Stderr
+          </label>
+          <textarea
+            id="stderr"
+            value={stderr}
+            className="w-full h-20 p-4 bg-white border border-gray-300 rounded-lg resize-none"
+            placeholder="Error will be displayed here..."
             readOnly
           ></textarea>
         </div>
@@ -77,7 +114,10 @@ const CodeEditorPage = () => {
         </div>
 
         <div className="w-full max-w-3xl flex justify-end">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg">
+          <button
+            onClick={handleSubmit}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
+          >
             Submit
           </button>
         </div>

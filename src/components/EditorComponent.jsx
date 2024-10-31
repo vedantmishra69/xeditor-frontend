@@ -9,7 +9,9 @@ const EditorComponent = () => {
   const ydoc = useRef(null);
   const [editor, setEditor] = useState(null);
   const [provider, setProvider] = useState(null);
-  const { language, sourceCode } = useCodeContext();
+  const { language, sourceCode, setSourceCode } = useCodeContext();
+
+  const handleSourceCode = (value) => setSourceCode(value);
 
   useEffect(() => {
     const provider = new HocuspocusProvider({
@@ -44,6 +46,7 @@ const EditorComponent = () => {
     <Editor
       language={LANGUAGE_MAPPING[language].monacoLanguage}
       value={sourceCode}
+      onChange={handleSourceCode}
       onMount={(editor) => {
         setEditor(editor);
       }}
