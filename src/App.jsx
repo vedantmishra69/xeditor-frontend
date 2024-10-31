@@ -1,11 +1,12 @@
 import "./App.css";
-import EditorComponent from "./Components/EditorComponent";
+import CodeEditorContext from "./contexts/CodeEditorContext";
+import CodeEditorPage from "./pages/CodeEditorPage";
 
 function App() {
   return (
-    <div className="min-h-screen w-full items-center justify-center flex">
-      <EditorComponent />
-    </div>
+    <CodeEditorContext>
+      <CodeEditorPage />
+    </CodeEditorContext>
   );
 }
 

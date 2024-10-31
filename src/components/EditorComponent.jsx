@@ -2,15 +2,18 @@ import Editor from "@monaco-editor/react";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import { MonacoBinding } from "y-monaco";
 import { useState, useEffect, useRef } from "react";
+import { LANGUAGE_MAPPING, SOCKET_URL } from "../lib/constants";
+import { useCodeContext } from "../contexts/CodeEditorContext";
 
 const EditorComponent = () => {
   const ydoc = useRef(null);
   const [editor, setEditor] = useState(null);
   const [provider, setProvider] = useState(null);
+  const { language, sourceCode } = useCodeContext();
 
   useEffect(() => {
     const provider = new HocuspocusProvider({
-      url: "ws://127.0.0.1:1234",
+      url: `${SOCKET_URL}/collab`,
       name: "example-document",
     });
     setProvider(provider);
@@ -39,10 +42,8 @@ const EditorComponent = () => {
 
   return (
     <Editor
-      height="90vh"
-      width="50vw"
-      defaultValue="// some comment"
-      defaultLanguage="javascript"
+      language={LANGUAGE_MAPPING[language].monacoLanguage}
+      value={sourceCode}
       onMount={(editor) => {
         setEditor(editor);
       }}
