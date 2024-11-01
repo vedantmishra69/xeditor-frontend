@@ -44,7 +44,17 @@ export const fetchResult = async (token) => {
         return;
       }
       if (submission.status.id >= 3) {
-        return submission;
+        return {
+          stdout: submission.stdout ? atob(submission.stdout) : "",
+          stderr: submission.stderr ? atob(submission.stderr) : "",
+          compile_output: submission.compile_output
+            ? atob(submission.compile_output)
+            : "",
+          exit_code: submission.exit_code,
+          status_id: submission.status_id,
+          time: submission.time,
+          memory: submission.memory,
+        };
       }
       if (Date.now() - startTime > config.timeout) {
         console.error("Polling timeout exceeded!");

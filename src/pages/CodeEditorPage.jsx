@@ -25,9 +25,8 @@ const CodeEditorPage = () => {
       if (!data.error && data.token) {
         const result = await fetchResult(data.token);
         if (result) {
-          setStdout(result.stdout ? atob(result.stdout) : "");
-          setStderr(result.stderr ? atob(result.stderr) : "");
-          return;
+          setStdout(result.stdout);
+          setStderr(result.stderr);
         } else setStdout("Error");
       }
     }
@@ -79,6 +78,8 @@ const CodeEditorPage = () => {
             readOnly
           ></textarea>
         </div>
+
+        <div></div>
 
         <div className="w-full max-w-3xl mb-4">
           <label

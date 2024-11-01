@@ -4,6 +4,7 @@ import { MonacoBinding } from "y-monaco";
 import { useState, useEffect, useRef } from "react";
 import { LANGUAGE_MAPPING, SOCKET_URL } from "../lib/constants";
 import { useCodeContext } from "../contexts/CodeEditorContext";
+import { v4 as uuidv4 } from "uuid";
 
 const EditorComponent = () => {
   const ydoc = useRef(null);
@@ -16,7 +17,7 @@ const EditorComponent = () => {
   useEffect(() => {
     const provider = new HocuspocusProvider({
       url: `${SOCKET_URL}/collab`,
-      name: "example-document",
+      name: uuidv4(),
     });
     setProvider(provider);
     ydoc.current = provider.document;
