@@ -1,10 +1,11 @@
 import { API_URL, LANGUAGE_MAPPING } from "./constants";
+import { v4 as uuidv4 } from "uuid";
 
 export const submitCode = async (language, sourceCode, stdin) => {
   const body = {
     language_id: LANGUAGE_MAPPING[language].id,
-    source_code: btoa(sourceCode),
-    stdin: btoa(stdin),
+    source_code: encodeUTF8ToBase64(sourceCode),
+    stdin: encodeUTF8ToBase64(stdin),
   };
   try {
     const response = await fetch(`${API_URL}/code/submit`, {
@@ -45,10 +46,14 @@ export const fetchResult = async (token) => {
       }
       if (submission.status.id >= 3) {
         return {
-          stdout: submission.stdout ? atob(submission.stdout) : "",
-          stderr: submission.stderr ? atob(submission.stderr) : "",
+          stdout: submission.stdout
+            ? decodeBase64ToUTF8(submission.stdout)
+            : "",
+          stderr: submission.stderr
+            ? decodeBase64ToUTF8(submission.stderr)
+            : "",
           compile_output: submission.compile_output
-            ? atob(submission.compile_output)
+            ? decodeBase64ToUTF8(submission.compile_output)
             : "",
           exit_code: submission.exit_code,
           status_id: submission.status_id,
@@ -70,3 +75,35 @@ export const fetchResult = async (token) => {
     }
   }
 };
+
+const decodeBase64ToUTF8 = (base64String) => {
+  // Remove any newlines from the base64 string
+  const cleanBase64 = base64String.replace(/\n/g, "");
+
+  // Convert base64 to binary data
+  const binaryData = atob(cleanBase64);
+
+  // Convert binary data to UTF-8
+  return decodeURIComponent(
+    Array.from(binaryData)
+      .map((char) => "%" + ("00" + char.charCodeAt(0).toString(16)).slice(-2))
+      .join("")
+  );
+};
+
+const encodeUTF8ToBase64 = (utf8String) => {
+  // Convert UTF-8 string to binary data
+  const binaryString = encodeURIComponent(utf8String).replace(
+    /%([0-9A-F]{2})/g,
+    (_, p1) => String.fromCharCode(parseInt(p1, 16))
+  );
+
+  // Convert to base64
+  const base64 = btoa(binaryString);
+
+  // Add newlines every 64 characters for readability
+  // This is optional but matches common base64 formatting
+  return base64.replace(/(.{64})/g, "$1\n");
+};
+
+export const generateUUID = () => uuidv4();

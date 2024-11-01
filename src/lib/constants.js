@@ -1,7 +1,7 @@
 export const api = "localhost:1234";
 export const API_URL = `http://${api}`;
 export const SOCKET_URL = `ws://${api}`;
-export const DEFAULT_LANGUAGE = "Python (3.12.5)"; // Python
+export const DEFAULT_LANGUAGE = "Python (3.8.1)";
 export const DEFAULT_CODE = "print('hello')";
 
 export const LANGUAGE_MAPPING = {
