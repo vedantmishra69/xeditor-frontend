@@ -1,22 +1,23 @@
 import { useState } from "react";
 import { useCodeContext } from "../contexts/CodeEditorContext";
 import { LANGUAGE_MAPPING } from "../lib/constants";
-import { fetchResult, submitCode } from "../lib/util";
+import { copyToClipboard, fetchResult, submitCode } from "../lib/util";
 import CodeEditor from "../components/CodeEditor";
 import { useCollabContext } from "../contexts/CollaborationContext";
+import toast from "react-hot-toast";
 
 const CodeEditorPage = () => {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [time, setTime] = useState("");
   const [memory, setMemory] = useState("");
-  const [inviteToken, setInviteToken] = useState("");
+  const [joinToken, setJoinToken] = useState("");
   const { language, setLanguage, sourceCode, setSourceCode } = useCodeContext();
-  const { setDocName } = useCollabContext();
+  const { docName, setDocName } = useCollabContext();
 
   const handleInput = (e) => setInput(e.target.value);
 
-  const handleInvite = (e) => setInviteToken(e.target.value);
+  const handleJoin = (e) => setJoinToken(e.target.value);
 
   const handleLanguage = (name) => {
     setLanguage(name);
@@ -54,8 +55,13 @@ const CodeEditorPage = () => {
     }
   };
 
-  const handleInviteSubmit = () => {
-    if (inviteToken) setDocName(inviteToken);
+  const handleTokenSubmit = () => {
+    if (joinToken) setDocName(joinToken);
+  };
+
+  const handleInvite = async () => {
+    const response = await copyToClipboard(docName);
+    toast.success(response.message);
   };
 
   const languageOptions = [];
@@ -73,7 +79,7 @@ const CodeEditorPage = () => {
         <CodeEditor />
       </div>
       <div className="flex-1 h-screen flex flex-col p-4">
-        <div className="flex-1 space-y-4 flex flex-col mb-2">
+        <div className="flex-1 space-y-4 flex flex-col">
           <div className="flex-1 w-full max-w-3xl flex flex-col">
             <label className="block text-gray-700 font-semibold mb-2">
               Input
@@ -81,7 +87,7 @@ const CodeEditorPage = () => {
             <textarea
               value={input}
               onChange={handleInput}
-              className="w-full flex-1 p-2 bg-white border border-gray-300 resize-none"
+              className="w-full flex-1 p-2 bg-white border border-gray-300 resize-none rounded-lg"
               placeholder="Provide input if needed..."
             ></textarea>
           </div>
@@ -92,7 +98,7 @@ const CodeEditorPage = () => {
             </label>
             <textarea
               value={output}
-              className="w-full flex-1 p-2 bg-white border border-gray-300 resize-none"
+              className="w-full flex-1 p-2 bg-white border border-gray-300 resize-none rounded-lg"
               placeholder="Output will be displayed here..."
               readOnly
             ></textarea>
@@ -104,13 +110,25 @@ const CodeEditorPage = () => {
           <div>{memory ? `Memory: ${memory}kB` : ""}</div>
         </div>
 
-        <div className="w-full flex flex-row gap-2">
-          <input type="text" value={inviteToken} onChange={handleInvite} />
+        <div className="w-full flex flex-row gap-2 mb-2">
           <button
-            onClick={handleInviteSubmit}
+            onClick={handleInvite}
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
           >
-            Enter
+            Invite
+          </button>
+          <input
+            type="text"
+            value={joinToken}
+            onChange={handleJoin}
+            placeholder="Enter invite token here..."
+            className="bg-white border border-gray-300 rounded-lg p-2 w-1/2"
+          />
+          <button
+            onClick={handleTokenSubmit}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
+          >
+            Join
           </button>
         </div>
 

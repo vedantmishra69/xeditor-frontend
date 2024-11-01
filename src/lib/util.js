@@ -107,3 +107,13 @@ const encodeUTF8ToBase64 = (utf8String) => {
 };
 
 export const generateUUID = () => uuidv4();
+
+export const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    return { message: "Invite token copied to clipboard!" };
+  } catch (err) {
+    console.err(err);
+    return { message: "Copying failed, please try again." };
+  }
+};

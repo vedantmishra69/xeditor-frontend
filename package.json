@@ -14,9 +14,9 @@
     "@monaco-editor/react": "^4.6.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.4.1",
     "uuid": "^11.0.2",
     "y-monaco": "^0.1.5",
-    "y-websocket": "^2.0.3",
     "yjs": "^13.6.16"
   },
   "devDependencies": {
