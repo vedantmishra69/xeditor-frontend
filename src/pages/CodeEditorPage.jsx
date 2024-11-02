@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useCodeContext } from "../contexts/CodeEditorContext";
-import { LANGUAGE_MAPPING } from "../lib/constants";
+import { LANGUAGE_MAPPING, STATUS_MAPPING } from "../lib/constants";
 import { copyToClipboard, fetchResult, submitCode } from "../lib/util";
 import CodeEditor from "../components/CodeEditor";
 import { useCollabContext } from "../contexts/CollaborationContext";
@@ -11,6 +11,7 @@ const CodeEditorPage = () => {
   const [output, setOutput] = useState("");
   const [time, setTime] = useState("");
   const [memory, setMemory] = useState("");
+  const [status, setStatus] = useState("");
   const [joinToken, setJoinToken] = useState("");
   const { language, setLanguage, sourceCode, setSourceCode } = useCodeContext();
   const { docName, setDocName } = useCollabContext();
@@ -26,6 +27,7 @@ const CodeEditorPage = () => {
     setSourceCode("");
     setTime("");
     setMemory("");
+    setStatus("");
   };
 
   const handleSubmit = async () => {
@@ -33,6 +35,7 @@ const CodeEditorPage = () => {
       setOutput("Loading...");
       setTime("");
       setMemory("");
+      setStatus("");
       const data = await submitCode(language, sourceCode, input);
       if (!data.error && data.token) {
         const result = await fetchResult(data.token);
@@ -50,6 +53,7 @@ const CodeEditorPage = () => {
           );
           setTime(result.time);
           setMemory(result.memory);
+          setStatus(result.status_id);
         }
       }
     }
@@ -93,9 +97,17 @@ const CodeEditorPage = () => {
           </div>
 
           <div className="flex-1 w-full max-w-3xl flex flex-col">
-            <label className="block text-gray-700 font-semibold mb-2">
-              Output
-            </label>
+            <div className="flex flex-row justify-between">
+              <label className="text-gray-700 font-semibold mb-2">Output</label>
+              <div
+                className={
+                  (status === 3 ? "text-green-500" : "text-red-500") +
+                  " font-semibold mb-2"
+                }
+              >
+                {STATUS_MAPPING[status]}
+              </div>
+            </div>
             <textarea
               value={output}
               className="w-full flex-1 p-2 bg-white border border-gray-300 resize-none rounded-lg"
