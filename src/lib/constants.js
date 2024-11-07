@@ -1,9 +1,10 @@
-export const api = "localhost:1234";
+export const api = import.meta.env.VITE_BACKEND_API;
 export const API_URL = `http://${api}`;
 export const SOCKET_URL = `ws://${api}`;
 export const DEFAULT_LANGUAGE = "Python (3.8.1)";
 export const DEFAULT_CODE = "print('hello')";
-
+export const SUPABASE_PROJECT_URL = import.meta.env.VITE_SUPABASE_PROJECT_URL;
+export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const LANGUAGE_MAPPING = {
   "Bash (5.0.0)": {
     id: 46,

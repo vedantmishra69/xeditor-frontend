@@ -15,7 +15,7 @@ const CodeEditor = () => {
       onMount={(editor) => {
         setEditor(editor);
       }}
-      theme="vs-dark"
+      theme=""
     />
   );
 };

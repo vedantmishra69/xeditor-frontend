@@ -3,8 +3,10 @@ import { useCodeContext } from "../contexts/CodeEditorContext";
 import { LANGUAGE_MAPPING, STATUS_MAPPING } from "../lib/constants";
 import { copyToClipboard, fetchResult, submitCode } from "../lib/util";
 import CodeEditor from "../components/CodeEditor";
-import { useCollabContext } from "../contexts/CollaborationContext";
 import toast from "react-hot-toast";
+import ChatWindow from "../components/ChatWindow";
+import { useAuthContext } from "../contexts/AuthContext";
+import { useChatContext } from "../contexts/ChatContext";
 
 const CodeEditorPage = () => {
   const [input, setInput] = useState("");
@@ -14,7 +16,8 @@ const CodeEditorPage = () => {
   const [status, setStatus] = useState("");
   const [joinToken, setJoinToken] = useState("");
   const { language, setLanguage, sourceCode, setSourceCode } = useCodeContext();
-  const { docName, setDocName } = useCollabContext();
+  const { setMessageList } = useChatContext();
+  const { docName, setDocName } = useAuthContext();
 
   const handleInput = (e) => setInput(e.target.value);
 
@@ -60,7 +63,17 @@ const CodeEditorPage = () => {
   };
 
   const handleTokenSubmit = () => {
-    if (joinToken) setDocName(joinToken);
+    if (joinToken) {
+      setDocName(joinToken);
+      setInput("");
+      setOutput("");
+      setTime("");
+      setMemory("");
+      setStatus("");
+      setMessageList([]);
+      setJoinToken("");
+      toast.success("Room joined successfully.");
+    }
   };
 
   const handleInvite = async () => {
@@ -79,8 +92,13 @@ const CodeEditorPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-row justify-between">
-      <div className="flex-1 flex justify-center p-4">
-        <CodeEditor />
+      <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex justify-center p-4">
+          <CodeEditor />
+        </div>
+        <div className="flex-1">
+          <ChatWindow />
+        </div>
       </div>
       <div className="flex-1 h-screen flex flex-col p-4">
         <div className="flex-1 space-y-4 flex flex-col">

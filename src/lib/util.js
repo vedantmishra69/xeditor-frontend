@@ -117,3 +117,60 @@ export const copyToClipboard = async (text) => {
     return { message: "Copying failed, please try again." };
   }
 };
+
+export const getRandomTailwindColor = () => {
+  const colors = [
+    "text-gray-500",
+    "text-gray-600",
+    "text-gray-700",
+    "text-gray-800",
+    "text-gray-900",
+    "text-red-500",
+    "text-red-600",
+    "text-red-700",
+    "text-red-800",
+    "text-red-900",
+    "text-yellow-500",
+    "text-yellow-600",
+    "text-yellow-700",
+    "text-yellow-800",
+    "text-yellow-900",
+    "text-green-500",
+    "text-green-600",
+    "text-green-700",
+    "text-green-800",
+    "text-green-900",
+    "text-blue-500",
+    "text-blue-600",
+    "text-blue-700",
+    "text-blue-800",
+    "text-blue-900",
+    "text-indigo-500",
+    "text-indigo-600",
+    "text-indigo-700",
+    "text-indigo-800",
+    "text-indigo-900",
+    "text-purple-500",
+    "text-purple-600",
+    "text-purple-700",
+    "text-purple-800",
+    "text-purple-900",
+    "text-pink-500",
+    "text-pink-600",
+    "text-pink-700",
+    "text-pink-800",
+    "text-pink-900",
+  ];
+
+  const randomIndex = Math.floor(Math.random() * colors.length);
+  return colors[randomIndex];
+};
+
+export const getRandomColor = () => {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};

@@ -5,29 +5,63 @@ import { MonacoBinding } from "y-monaco";
 import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { SOCKET_URL } from "../lib/constants";
 import { useCodeContext } from "./CodeEditorContext";
-import { generateUUID } from "../lib/util";
+import { useAuthContext } from "./AuthContext";
 
 const Context = createContext();
 
 const CollaborationContext = ({ children }) => {
   const ydoc = useRef(null);
   const [provider, setProvider] = useState(null);
-  const [docName, setDocName] = useState(generateUUID());
+  const { docName } = useAuthContext();
   const { editor } = useCodeContext();
+  const { name, color } = useAuthContext();
 
   useEffect(() => {
     console.log("doc", docName);
     const provider = new HocuspocusProvider({
-      url: `${SOCKET_URL}/collab`,
+      url: `${SOCKET_URL}/collab/doc`,
       name: docName,
     });
     setProvider(provider);
     ydoc.current = provider.document;
+    provider.setAwarenessField("user", {
+      name: name,
+      color: color,
+    });
+    provider.on("awarenessChange", ({ states }) => {
+      for (const state of states) {
+        const styleToAdd = `
+          .yRemoteSelection {
+            background-color: ${state.user.color};
+          }
+          .yRemoteSelectionHead {
+            position: absolute;
+            border-left: ${state.user.color} solid 2px;
+            border-top: ${state.user.color} solid 2px;
+            border-bottom: ${state.user.color} solid 2px;
+            height: 100%;
+            box-sizing: border-box;
+          }
+          .yRemoteSelectionHead::after {
+            position: absolute;
+            content: " ";
+            border: 3px solid ${state.user.color};
+            border-radius: 4px;
+            left: -4px;
+            top: -5px;
+          }
+        `;
+        document.body.insertAdjacentHTML(
+          "beforebegin",
+          `<style>${styleToAdd}</style>`
+        );
+      }
+    });
     return () => {
       provider.destroy();
       ydoc.current.destroy();
     };
-  }, [docName]);
+  }, [color, docName, name]);
 
   useEffect(() => {
     if (provider == null || editor == null) {
@@ -48,9 +82,6 @@ const CollaborationContext = ({ children }) => {
   const value = {
     ydoc,
     provider,
-    setProvider,
-    docName,
-    setDocName,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

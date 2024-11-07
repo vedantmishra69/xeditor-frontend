@@ -3,6 +3,8 @@ import "./App.css";
 import CodeEditorContext from "./contexts/CodeEditorContext";
 import CollaborationContext from "./contexts/CollaborationContext";
 import CodeEditorPage from "./pages/CodeEditorPage";
+import AuthContext from "./contexts/AuthContext";
+import ChatContext from "./contexts/ChatContext";
 
 function App() {
   return (
@@ -10,11 +12,15 @@ function App() {
       <div>
         <Toaster />
       </div>
-      <CodeEditorContext>
-        <CollaborationContext>
-          <CodeEditorPage />
-        </CollaborationContext>
-      </CodeEditorContext>
+      <AuthContext>
+        <CodeEditorContext>
+          <CollaborationContext>
+            <ChatContext>
+              <CodeEditorPage />
+            </ChatContext>
+          </CollaborationContext>
+        </CodeEditorContext>
+      </AuthContext>
     </>
   );
 }
