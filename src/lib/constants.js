@@ -5,6 +5,7 @@ export const DEFAULT_LANGUAGE = "Python (3.8.1)";
 export const DEFAULT_CODE = "print('hello')";
 export const SUPABASE_PROJECT_URL = import.meta.env.VITE_SUPABASE_PROJECT_URL;
 export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 export const LANGUAGE_MAPPING = {
   "Bash (5.0.0)": {
     id: 46,

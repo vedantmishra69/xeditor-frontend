@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import ChatWindow from "../components/ChatWindow";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useChatContext } from "../contexts/ChatContext";
+import { GoogleLogin } from "@react-oauth/google";
 
 const CodeEditorPage = () => {
   const [input, setInput] = useState("");
@@ -17,7 +18,14 @@ const CodeEditorPage = () => {
   const [joinToken, setJoinToken] = useState("");
   const { language, setLanguage, sourceCode, setSourceCode } = useCodeContext();
   const { setMessageList } = useChatContext();
-  const { docName, setDocName } = useAuthContext();
+  const {
+    docName,
+    setDocName,
+    handleSignInWithGoogle,
+    handleSignOut,
+    isSignedIn,
+    name,
+  } = useAuthContext();
 
   const handleInput = (e) => setInput(e.target.value);
 
@@ -152,7 +160,7 @@ const CodeEditorPage = () => {
             value={joinToken}
             onChange={handleJoin}
             placeholder="Enter invite token here..."
-            className="bg-white border border-gray-300 rounded-lg p-2 w-1/2"
+            className="flex-1 bg-white border border-gray-300 rounded-lg p-2 w-1/2"
           />
           <button
             onClick={handleTokenSubmit}
@@ -160,6 +168,33 @@ const CodeEditorPage = () => {
           >
             Join
           </button>
+          {isSignedIn ? (
+            <div className="flex flex-row gap-2">
+              <div className="text-xl font-semibold">{name}</div>
+              <button
+                onClick={handleSignOut}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <GoogleLogin
+              onSuccess={handleSignInWithGoogle}
+              onError={() => {
+                console.log("Login Failed");
+              }}
+              context="signin"
+              ux_mode="popup"
+              type="standard"
+              shape="rectangular"
+              theme="outline"
+              text="signin"
+              size="large"
+              logo_alignment="left"
+              use_fedcm_for_prompt
+            />
+          )}
         </div>
 
         <div className="mt-auto w-full max-w-3xl">

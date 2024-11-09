@@ -24,28 +24,28 @@ const CollaborationContext = ({ children }) => {
     });
     setProvider(provider);
     ydoc.current = provider.document;
-    provider.setAwarenessField("user", {
-      name: name,
-      color: color,
-    });
-    provider.on("awarenessChange", ({ states }) => {
-      for (const state of states) {
+    const awareness = provider.awareness;
+    awareness.setLocalStateField("color", color);
+    const stateMap = awareness.getStates();
+    awareness.on("change", ({ added }) => {
+      for (const clientId of added) {
+        const color = stateMap.get(clientId).color;
         const styleToAdd = `
-          .yRemoteSelection {
-            background-color: ${state.user.color};
+          .yRemoteSelection-${clientId} {
+            background-color: ${color};
           }
-          .yRemoteSelectionHead {
+          .yRemoteSelectionHead-${clientId} {
             position: absolute;
-            border-left: ${state.user.color} solid 2px;
-            border-top: ${state.user.color} solid 2px;
-            border-bottom: ${state.user.color} solid 2px;
+            border-left: ${color} solid 2px;
+            border-top: ${color} solid 2px;
+            border-bottom: ${color} solid 2px;
             height: 100%;
             box-sizing: border-box;
           }
-          .yRemoteSelectionHead::after {
+          .yRemoteSelectionHead-${clientId}::after {
             position: absolute;
             content: " ";
-            border: 3px solid ${state.user.color};
+            border: 3px solid ${color};
             border-radius: 4px;
             left: -4px;
             top: -5px;
@@ -57,6 +57,7 @@ const CollaborationContext = ({ children }) => {
         );
       }
     });
+
     return () => {
       provider.destroy();
       ydoc.current.destroy();

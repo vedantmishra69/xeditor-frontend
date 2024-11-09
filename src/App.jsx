@@ -5,6 +5,8 @@ import CollaborationContext from "./contexts/CollaborationContext";
 import CodeEditorPage from "./pages/CodeEditorPage";
 import AuthContext from "./contexts/AuthContext";
 import ChatContext from "./contexts/ChatContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GOOGLE_CLIENT_ID } from "./lib/constants";
 
 function App() {
   return (
@@ -12,15 +14,17 @@ function App() {
       <div>
         <Toaster />
       </div>
-      <AuthContext>
-        <CodeEditorContext>
-          <CollaborationContext>
-            <ChatContext>
-              <CodeEditorPage />
-            </ChatContext>
-          </CollaborationContext>
-        </CodeEditorContext>
-      </AuthContext>
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <AuthContext>
+          <CodeEditorContext>
+            <CollaborationContext>
+              <ChatContext>
+                <CodeEditorPage />
+              </ChatContext>
+            </CollaborationContext>
+          </CodeEditorContext>
+        </AuthContext>
+      </GoogleOAuthProvider>
     </>
   );
 }

@@ -5,15 +5,11 @@ import { useChatContext } from "../contexts/ChatContext";
 const ChatWindow = () => {
   const { messageList, channel, isSubbed } = useChatContext();
   const [input, setInput] = useState("");
-  const { name } = useAuthContext();
+  const { name, color } = useAuthContext();
 
   const messageBoxList = messageList?.map((item, index) => (
     <div key={index} className="w-full my-1">
-      <span
-        className={item.user === name ? "text-yellow-500" : "text-green-500"}
-      >
-        {item.user.replace("_", " ")}
-      </span>
+      <span style={{ color: item.color }}>{item.user.replace("_", " ")}</span>
       {`: ${item.message}`}
     </div>
   ));
@@ -25,7 +21,7 @@ const ChatWindow = () => {
       channel.send({
         type: "broadcast",
         event: "test",
-        payload: { user: name, message: input },
+        payload: { user: name, message: input, color: color },
       });
       setInput("");
     }

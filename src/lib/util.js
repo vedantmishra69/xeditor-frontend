@@ -118,59 +118,30 @@ export const copyToClipboard = async (text) => {
   }
 };
 
-export const getRandomTailwindColor = () => {
+export const getRandomColor = () => {
   const colors = [
-    "text-gray-500",
-    "text-gray-600",
-    "text-gray-700",
-    "text-gray-800",
-    "text-gray-900",
-    "text-red-500",
-    "text-red-600",
-    "text-red-700",
-    "text-red-800",
-    "text-red-900",
-    "text-yellow-500",
-    "text-yellow-600",
-    "text-yellow-700",
-    "text-yellow-800",
-    "text-yellow-900",
-    "text-green-500",
-    "text-green-600",
-    "text-green-700",
-    "text-green-800",
-    "text-green-900",
-    "text-blue-500",
-    "text-blue-600",
-    "text-blue-700",
-    "text-blue-800",
-    "text-blue-900",
-    "text-indigo-500",
-    "text-indigo-600",
-    "text-indigo-700",
-    "text-indigo-800",
-    "text-indigo-900",
-    "text-purple-500",
-    "text-purple-600",
-    "text-purple-700",
-    "text-purple-800",
-    "text-purple-900",
-    "text-pink-500",
-    "text-pink-600",
-    "text-pink-700",
-    "text-pink-800",
-    "text-pink-900",
+    "#2196F3", // Vibrant blue
+    "#FF5722", // Deep orange
+    "#4CAF50", // Fresh green
+    "#9C27B0", // Rich purple
+    "#FFC107", // Warm amber
+    "#607D8B", // Cool blue-gray
+    "#E91E63", // Pink rose
+    "#00BCD4", // Turquoise
+    "#8BC34A", // Lime green
+    "#FF9800", // Orange
+    "#795548", // Warm brown
+    "#3F51B5", // Indigo
+    "#009688", // Teal
+    "#FFEB3B", // Yellow
+    "#673AB7", // Deep purple
+    "#F44336", // Red
+    "#03A9F4", // Light blue
+    "#4DB6AC", // Seafoam
+    "#FFA726", // Soft orange
+    "#5C6BC0", // Muted blue
   ];
 
   const randomIndex = Math.floor(Math.random() * colors.length);
   return colors[randomIndex];
-};
-
-export const getRandomColor = () => {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
 };
