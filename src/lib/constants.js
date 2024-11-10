@@ -3,6 +3,7 @@ export const API_URL = `http://${api}`;
 export const SOCKET_URL = `ws://${api}`;
 export const DEFAULT_LANGUAGE = "Python (3.8.1)";
 export const DEFAULT_CODE = "print('hello')";
+export const DEFAULT_THEME = "Monokai";
 export const SUPABASE_PROJECT_URL = import.meta.env.VITE_SUPABASE_PROJECT_URL;
 export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -221,3 +222,78 @@ export const STATUS_MAPPING = {
   13: "Internal Error",
   14: "Exec Format Error",
 };
+
+export const COLORS = [
+  "#2196F3", // Vibrant blue
+  "#FF5722", // Deep orange
+  "#4CAF50", // Fresh green
+  "#9C27B0", // Rich purple
+  "#FFC107", // Warm amber
+  "#607D8B", // Cool blue-gray
+  "#E91E63", // Pink rose
+  "#00BCD4", // Turquoise
+  "#8BC34A", // Lime green
+  "#FF9800", // Orange
+  "#795548", // Warm brown
+  "#3F51B5", // Indigo
+  "#009688", // Teal
+  "#FFEB3B", // Yellow
+  "#673AB7", // Deep purple
+  "#F44336", // Red
+  "#03A9F4", // Light blue
+  "#4DB6AC", // Seafoam
+  "#FFA726", // Soft orange
+  "#5C6BC0", // Muted blue
+];
+
+export const THEME_LIST = [
+  "Active4D",
+  "All Hallows Eve",
+  "Amy",
+  "Birds of Paradise",
+  "Blackboard",
+  "Brilliance Black",
+  "Brilliance Dull",
+  "Chrome DevTools",
+  "Clouds Midnight",
+  "Clouds",
+  "Cobalt",
+  "Cobalt2",
+  "Dawn",
+  "Dracula",
+  "Dreamweaver",
+  "Eiffel",
+  "Espresso Libre",
+  "GitHub Dark",
+  "GitHub Light",
+  "GitHub",
+  "IDLE",
+  "Katzenmilch",
+  "Kuroir Theme",
+  "LAZY",
+  "MagicWB (Amiga)",
+  "Merbivore Soft",
+  "Merbivore",
+  "Monokai Bright",
+  "Monokai",
+  "Night Owl",
+  "Nord",
+  "Oceanic Next",
+  "Pastels on Dark",
+  "Slush and Poppies",
+  "Solarized-dark",
+  "Solarized-light",
+  "SpaceCadet",
+  "Sunburst",
+  "Textmate (Mac Classic)",
+  "Tomorrow-Night-Blue",
+  "Tomorrow-Night-Bright",
+  "Tomorrow-Night-Eighties",
+  "Tomorrow-Night",
+  "Tomorrow",
+  "Twilight",
+  "Upstream Sunburst",
+  "Vibrant Ink",
+  "Xcode",
+  "Zenburnesque",
+];

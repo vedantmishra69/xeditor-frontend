@@ -1,5 +1,10 @@
-import { API_URL, LANGUAGE_MAPPING } from "./constants";
+import { API_URL, COLORS, LANGUAGE_MAPPING } from "./constants";
 import { v4 as uuidv4 } from "uuid";
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  animals,
+} from "unique-names-generator";
 
 export const submitCode = async (language, sourceCode, stdin) => {
   const body = {
@@ -119,29 +124,20 @@ export const copyToClipboard = async (text) => {
 };
 
 export const getRandomColor = () => {
-  const colors = [
-    "#2196F3", // Vibrant blue
-    "#FF5722", // Deep orange
-    "#4CAF50", // Fresh green
-    "#9C27B0", // Rich purple
-    "#FFC107", // Warm amber
-    "#607D8B", // Cool blue-gray
-    "#E91E63", // Pink rose
-    "#00BCD4", // Turquoise
-    "#8BC34A", // Lime green
-    "#FF9800", // Orange
-    "#795548", // Warm brown
-    "#3F51B5", // Indigo
-    "#009688", // Teal
-    "#FFEB3B", // Yellow
-    "#673AB7", // Deep purple
-    "#F44336", // Red
-    "#03A9F4", // Light blue
-    "#4DB6AC", // Seafoam
-    "#FFA726", // Soft orange
-    "#5C6BC0", // Muted blue
-  ];
-
-  const randomIndex = Math.floor(Math.random() * colors.length);
-  return colors[randomIndex];
+  const randomIndex = Math.floor(Math.random() * COLORS.length);
+  return COLORS[randomIndex];
 };
+
+export const getLocalUserData = () => {
+  const user = localStorage.getItem("xeditor_user") || {
+    settings: {
+      name: uniqueNamesGenerator({ dictionaries: [adjectives, animals] }),
+      color: getRandomColor(),
+    },
+  };
+  localStorage.setItem("xeditor_user", user);
+  return user;
+};
+
+export const getThemeName = (theme) =>
+  theme.replaceAll(" ", "-").toLowerCase().split("(")[0];

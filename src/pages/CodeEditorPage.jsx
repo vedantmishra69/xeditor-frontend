@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { useCodeContext } from "../contexts/CodeEditorContext";
-import { LANGUAGE_MAPPING, STATUS_MAPPING } from "../lib/constants";
+import {
+  DEFAULT_THEME,
+  LANGUAGE_MAPPING,
+  STATUS_MAPPING,
+  THEME_LIST,
+} from "../lib/constants";
 import { copyToClipboard, fetchResult, submitCode } from "../lib/util";
 import CodeEditor from "../components/CodeEditor";
 import toast from "react-hot-toast";
@@ -16,7 +21,8 @@ const CodeEditorPage = () => {
   const [memory, setMemory] = useState("");
   const [status, setStatus] = useState("");
   const [joinToken, setJoinToken] = useState("");
-  const { language, setLanguage, sourceCode, setSourceCode } = useCodeContext();
+  const { language, setLanguage, sourceCode, setSourceCode, handleSetTheme } =
+    useCodeContext();
   const { setMessageList } = useChatContext();
   const {
     docName,
@@ -94,6 +100,20 @@ const CodeEditorPage = () => {
     languageOptions.push(
       <option key={name} value={name} onClick={() => handleLanguage(name)}>
         {name}
+      </option>
+    );
+  }
+
+  const themeOptions = [];
+  for (const theme in THEME_LIST) {
+    const themeName = THEME_LIST[theme];
+    themeOptions.push(
+      <option
+        key={themeName}
+        value={themeName}
+        onClick={() => handleSetTheme(themeName)}
+      >
+        {themeName.replaceAll("-", " ")}
       </option>
     );
   }
@@ -208,6 +228,19 @@ const CodeEditorPage = () => {
               required
             >
               {languageOptions}
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">
+              Theme
+            </label>
+            <select
+              defaultValue={DEFAULT_THEME}
+              className="w-full p-3 bg-white border border-gray-300 rounded-lg"
+              required
+            >
+              {themeOptions}
             </select>
           </div>
 

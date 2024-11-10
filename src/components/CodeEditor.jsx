@@ -3,19 +3,16 @@ import { LANGUAGE_MAPPING } from "../lib/constants";
 import { useCodeContext } from "../contexts/CodeEditorContext";
 
 const CodeEditor = () => {
-  const { language, sourceCode, setSourceCode, setEditor } = useCodeContext();
-
-  const handleSourceCode = (value) => setSourceCode(value);
+  const { language, sourceCode, setSourceCode, setEditor, setMonaco } =
+    useCodeContext();
 
   return (
     <Editor
       language={LANGUAGE_MAPPING[language].monacoLanguage}
       value={sourceCode}
-      onChange={handleSourceCode}
-      onMount={(editor) => {
-        setEditor(editor);
-      }}
-      theme=""
+      onChange={(value) => setSourceCode(value)}
+      onMount={(editor) => setEditor(editor)}
+      beforeMount={(monaco) => setMonaco(monaco)}
     />
   );
 };
