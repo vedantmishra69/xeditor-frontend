@@ -30,7 +30,7 @@ const CodeEditorPage = () => {
     handleSignInWithGoogle,
     handleSignOut,
     isSignedIn,
-    name,
+    userData,
   } = useAuthContext();
 
   const handleInput = (e) => setInput(e.target.value);
@@ -190,7 +190,7 @@ const CodeEditorPage = () => {
           </button>
           {isSignedIn ? (
             <div className="flex flex-row gap-2">
-              <div className="text-xl font-semibold">{name}</div>
+              <div className="text-xl font-semibold">{userData.name}</div>
               <button
                 onClick={handleSignOut}
                 className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"

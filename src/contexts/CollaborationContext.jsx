@@ -14,7 +14,7 @@ const CollaborationContext = ({ children }) => {
   const [provider, setProvider] = useState(null);
   const { docName } = useAuthContext();
   const { editor } = useCodeContext();
-  const { name, color } = useAuthContext();
+  const { userData } = useAuthContext();
 
   useEffect(() => {
     console.log("doc", docName);
@@ -25,7 +25,7 @@ const CollaborationContext = ({ children }) => {
     setProvider(provider);
     ydoc.current = provider.document;
     const awareness = provider.awareness;
-    awareness.setLocalStateField("color", color);
+    awareness.setLocalStateField("color", userData?.color);
     const stateMap = awareness.getStates();
     awareness.on("change", ({ added }) => {
       for (const clientId of added) {
@@ -62,7 +62,7 @@ const CollaborationContext = ({ children }) => {
       provider.destroy();
       ydoc.current.destroy();
     };
-  }, [color, docName, name]);
+  }, [docName, userData?.color]);
 
   useEffect(() => {
     if (provider == null || editor == null) {

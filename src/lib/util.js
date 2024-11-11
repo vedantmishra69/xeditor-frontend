@@ -128,16 +128,12 @@ export const getRandomColor = () => {
   return COLORS[randomIndex];
 };
 
-export const getLocalUserData = () => {
-  const user = localStorage.getItem("xeditor_user") || {
-    settings: {
-      name: uniqueNamesGenerator({ dictionaries: [adjectives, animals] }),
-      color: getRandomColor(),
-    },
-  };
-  localStorage.setItem("xeditor_user", user);
-  return user;
-};
-
 export const getThemeName = (theme) =>
   theme.replaceAll(" ", "-").toLowerCase().split("(")[0];
+
+export const getRandomName = () => {
+  return uniqueNamesGenerator({ dictionaries: [adjectives, animals] }).replace(
+    "_",
+    " "
+  );
+};

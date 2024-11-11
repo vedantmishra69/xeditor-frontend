@@ -13,6 +13,7 @@ const CodeEditor = () => {
       onChange={(value) => setSourceCode(value)}
       onMount={(editor) => setEditor(editor)}
       beforeMount={(monaco) => setMonaco(monaco)}
+      options={{ tabSize: 2, fontSize: 14, wordWrap: "on" }}
     />
   );
 };
