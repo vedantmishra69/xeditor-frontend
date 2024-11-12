@@ -2,14 +2,12 @@
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useEffect, useState } from "react";
 import supabase from "../lib/supabase";
-import { generateUUID, getRandomName } from "../lib/util";
-import randomColor from "randomcolor";
+import { generateUUID, getRandomColor, getRandomName } from "../lib/util";
 
 const Context = createContext();
 
 const AuthContext = ({ children }) => {
   const [docName, setDocName] = useState(generateUUID());
-  const [session, setSession] = useState(null);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [userData, setUserData] = useState(null);
 
@@ -19,12 +17,19 @@ const AuthContext = ({ children }) => {
       token: response.credential,
     });
     if (error) console.log("Error while signing in: ", error);
-    else console.log("Sign in successful: ", data);
+    else {
+      console.log("Sign in successful: ", data);
+      setIsSignedIn(true);
+    }
   };
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) console.log("Error signing out: ", error);
+    else {
+      console.log("Sign out successful");
+      setIsSignedIn(false);
+    }
   };
 
   const signInAnon = async () => {
@@ -36,8 +41,8 @@ const AuthContext = ({ children }) => {
   const initializeValues = async (session) => {
     const { data, error } = await supabase.rpc("upsert_user_info", {
       p_id: session.user.id,
-      p_name: getRandomName(),
-      p_color: randomColor(),
+      p_name: session.user.user_metadata?.full_name || getRandomName(),
+      p_color: getRandomColor(),
     });
     setUserData(data);
     console.log("initialized");
@@ -45,14 +50,8 @@ const AuthContext = ({ children }) => {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      console.log("here1");
-    });
-
     supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      console.log("here2", _event);
+      console.log(_event);
       if (_event === "INITIAL_SESSION") {
         if (!session) signInAnon();
         else initializeValues(session);
@@ -74,6 +73,7 @@ const AuthContext = ({ children }) => {
     handleSignInWithGoogle,
     handleSignOut,
     userData,
+    setUserData,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

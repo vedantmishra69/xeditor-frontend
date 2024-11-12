@@ -1,10 +1,11 @@
-import { API_URL, COLORS, LANGUAGE_MAPPING } from "./constants";
+import { API_URL, LANGUAGE_MAPPING } from "./constants";
 import { v4 as uuidv4 } from "uuid";
 import {
   uniqueNamesGenerator,
   adjectives,
   animals,
 } from "unique-names-generator";
+import randomColor from "randomcolor";
 
 export const submitCode = async (language, sourceCode, stdin) => {
   const body = {
@@ -124,8 +125,7 @@ export const copyToClipboard = async (text) => {
 };
 
 export const getRandomColor = () => {
-  const randomIndex = Math.floor(Math.random() * COLORS.length);
-  return COLORS[randomIndex];
+  return randomColor().toLowerCase();
 };
 
 export const getThemeName = (theme) =>
