@@ -1,12 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useState, useEffect } from "react";
-import {
-  DEFAULT_CODE,
-  DEFAULT_LANGUAGE,
-  DEFAULT_THEME,
-  THEME_LIST,
-} from "../lib/constants";
+import { DEFAULT_CODE, DEFAULT_LANGUAGE, THEME_LIST } from "../lib/constants";
 import { getThemeName } from "../lib/util";
 import { useAuthContext } from "./AuthContext";
 

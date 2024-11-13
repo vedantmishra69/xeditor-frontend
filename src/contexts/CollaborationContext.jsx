@@ -6,24 +6,44 @@ import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { SOCKET_URL } from "../lib/constants";
 import { useCodeContext } from "./CodeEditorContext";
 import { useAuthContext } from "./AuthContext";
+import supabase from "../lib/supabase";
+import * as Y from "yjs";
+import { Buffer } from "buffer";
 
 const Context = createContext();
 
 const CollaborationContext = ({ children }) => {
   const ydoc = useRef(null);
   const [provider, setProvider] = useState(null);
-  const { docName } = useAuthContext();
   const { editor } = useCodeContext();
   const { userData } = useAuthContext();
 
   useEffect(() => {
-    console.log("doc", docName);
+    const upsertDoc = async (user_id, y_doc) => {
+      const { data, error } = await supabase
+        .from("user_docs")
+        .upsert(
+          { user_id: user_id, y_doc_json: y_doc },
+          { onConflict: "user_id", ignoreDuplicates: true }
+        );
+      if (error) console.log("e2", error);
+      else console.log("d2", data);
+    };
+
+    if (!userData) return;
     const provider = new HocuspocusProvider({
       url: `${SOCKET_URL}/collab/doc`,
-      name: docName,
+      name: userData.id,
+      token: userData.id,
     });
+    console.log("PROVIDER SET");
     setProvider(provider);
     ydoc.current = provider.document;
+    upsertDoc(
+      userData.id,
+      Buffer.from(Y.encodeStateAsUpdate(provider.document))
+    );
+    console.log(ydoc.current);
     const awareness = provider.awareness;
     awareness.setLocalStateField("color", userData?.color);
     const stateMap = awareness.getStates();
@@ -62,7 +82,7 @@ const CollaborationContext = ({ children }) => {
       provider.destroy();
       ydoc.current.destroy();
     };
-  }, [docName, userData?.color]);
+  }, [userData]);
 
   useEffect(() => {
     if (provider == null || editor == null) {

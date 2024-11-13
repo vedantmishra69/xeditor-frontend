@@ -1,68 +1,118 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import supabase from "../lib/supabase";
 import { generateUUID, getRandomColor, getRandomName } from "../lib/util";
 
-const Context = createContext();
+const Context = createContext(null);
 
 const AuthContext = ({ children }) => {
   const [docName, setDocName] = useState(generateUUID());
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const prevData = useRef(null);
 
   const handleSignInWithGoogle = async (response) => {
-    const { data, error } = await supabase.auth.signInWithIdToken({
-      provider: "google",
-      token: response.credential,
-    });
-    if (error) console.log("Error while signing in: ", error);
-    else {
-      console.log("Sign in successful: ", data);
-      setIsSignedIn(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: "google",
+        token: response.credential,
+      });
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error("Error while signing in:", error.message);
+      throw error;
     }
   };
 
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) console.log("Error signing out: ", error);
-    else {
-      console.log("Sign out successful");
-      setIsSignedIn(false);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error signing out:", error.message);
+      throw error;
     }
   };
 
   const signInAnon = async () => {
-    const { data, error } = await supabase.auth.signInAnonymously();
-    console.log(data);
-    if (error) console.log(error);
+    try {
+      const { data, error } = await supabase.auth.signInAnonymously();
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error("Error signing in anonymously:", error.message);
+      throw error;
+    }
   };
 
   const initializeValues = async (session) => {
-    const { data, error } = await supabase.rpc("upsert_user_info", {
-      p_id: session.user.id,
-      p_name: session.user.user_metadata?.full_name || getRandomName(),
-      p_color: getRandomColor(),
-    });
-    setUserData(data);
-    console.log("initialized");
-    if (error) console.log(error);
+    try {
+      if (!session?.user?.id) return;
+      const { data, error } = await supabase.rpc("upsert_user_info", {
+        p_id: session.user.id,
+        p_name: session.user.user_metadata?.full_name || getRandomName(),
+        p_color: getRandomColor(),
+      });
+
+      if (error) throw error;
+      if (JSON.stringify(prevData.current) !== JSON.stringify(data)) {
+        prevData.current = data;
+        setUserData(data);
+        console.log("INITIALIZED");
+      }
+    } catch (error) {
+      console.error("Error initializing user values:", error.message);
+    }
   };
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((_event, session) => {
-      console.log(_event);
-      if (_event === "INITIAL_SESSION") {
-        if (!session) signInAnon();
-        else initializeValues(session);
+    const handleAuthStateChange = (event, session) => {
+      console.log(event);
+
+      switch (event) {
+        case "INITIAL_SESSION": {
+          setIsLoading(true);
+          if (!session) {
+            setTimeout(async () => {
+              await signInAnon();
+              setIsLoading(false);
+            }, 0);
+          } else {
+            setTimeout(async () => {
+              await initializeValues(session);
+              setIsLoading(false);
+            }, 0);
+          }
+          break;
+        }
+        case "SIGNED_IN": {
+          setIsSignedIn(!session.user.is_anonymous);
+          setTimeout(async () => {
+            await initializeValues(session);
+          }, 0);
+          break;
+        }
+        case "SIGNED_OUT": {
+          setIsSignedIn(false);
+          setUserData(null);
+          setTimeout(async () => {
+            await signInAnon();
+          }, 0);
+          break;
+        }
       }
-      if (_event === "SIGNED_OUT") {
-        signInAnon();
-      }
-      if (_event === "SIGNED_IN") {
-        initializeValues(session);
-      }
-    });
+    };
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(handleAuthStateChange);
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const value = {
@@ -70,6 +120,7 @@ const AuthContext = ({ children }) => {
     setDocName,
     supabase,
     isSignedIn,
+    isLoading,
     handleSignInWithGoogle,
     handleSignOut,
     userData,
@@ -79,6 +130,14 @@ const AuthContext = ({ children }) => {
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };
 
-export const useAuthContext = () => useContext(Context);
+export const useAuthContext = () => {
+  const context = useContext(Context);
+  if (context === null) {
+    throw new Error(
+      "useAuthContext must be used within an AuthContext provider"
+    );
+  }
+  return context;
+};
 
 export default AuthContext;
