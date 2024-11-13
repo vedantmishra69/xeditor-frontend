@@ -81,6 +81,7 @@ const AuthContext = ({ children }) => {
               setIsLoading(false);
             }, 0);
           } else {
+            setIsSignedIn(!session.user.is_anonymous);
             setTimeout(async () => {
               await initializeValues(session);
               setIsLoading(false);
