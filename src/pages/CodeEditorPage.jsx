@@ -9,6 +9,7 @@ import { useAuthContext } from "../contexts/AuthContext";
 import { useChatContext } from "../contexts/ChatContext";
 import { GoogleLogin } from "@react-oauth/google";
 import Settings from "../components/Settings";
+import { useCollabContext } from "../contexts/CollaborationContext";
 
 const CodeEditorPage = () => {
   const [input, setInput] = useState("");
@@ -19,14 +20,9 @@ const CodeEditorPage = () => {
   const [joinToken, setJoinToken] = useState("");
   const { language, setLanguage, sourceCode, setSourceCode } = useCodeContext();
   const { setMessageList } = useChatContext();
-  const {
-    docName,
-    setDocName,
-    handleSignInWithGoogle,
-    handleSignOut,
-    isSignedIn,
-    userData,
-  } = useAuthContext();
+  const { handleSignInWithGoogle, handleSignOut, isSignedIn, userData } =
+    useAuthContext();
+  const { docId, setDocId, joined, setJoined } = useCollabContext();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const handleInput = (e) => setInput(e.target.value);
@@ -73,8 +69,9 @@ const CodeEditorPage = () => {
   };
 
   const handleTokenSubmit = () => {
-    if (joinToken) {
-      setDocName(joinToken);
+    if (joinToken && !joined) {
+      setDocId(joinToken);
+      setJoined(true);
       setInput("");
       setOutput("");
       setTime("");
@@ -86,12 +83,17 @@ const CodeEditorPage = () => {
     }
   };
 
+  const handleLeave = () => {
+    setJoined(false);
+    toast.success("Room left successfully.");
+  };
+
   const handleSettings = () => {
     setSettingsOpen(true);
   };
 
   const handleInvite = async () => {
-    const response = await copyToClipboard(docName);
+    const response = await copyToClipboard(docId);
     toast.success(response.message);
   };
 
@@ -140,6 +142,12 @@ const CodeEditorPage = () => {
               className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
             >
               Join
+            </button>
+            <button
+              onClick={handleLeave}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
+            >
+              Leave
             </button>
             <button
               onClick={handleSettings}

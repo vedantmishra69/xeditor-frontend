@@ -137,3 +137,36 @@ export const getRandomName = () => {
     " "
   );
 };
+
+export const cursorStyle = (clientId, color) => {
+  return `
+    .yRemoteSelection-${clientId} {
+      background-color: ${color};
+    }
+    .yRemoteSelectionHead-${clientId} {
+      position: absolute;
+      border-left: ${color} solid 2px;
+      border-top: ${color} solid 2px;
+      border-bottom: ${color} solid 2px;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    .yRemoteSelectionHead-${clientId}::after {
+      position: absolute;
+      content: " ";
+      border: 3px solid ${color};
+      border-radius: 4px;
+      left: -4px;
+      top: -5px;
+    }
+  `;
+};
+
+export const removeCursorStyle = (clientId) => {
+  const styleTags = document.getElementsByTagName("style");
+  Array.from(styleTags).forEach((style) => {
+    if (style.textContent.includes(`yRemoteSelection-${clientId}`)) {
+      style.remove();
+    }
+  });
+};

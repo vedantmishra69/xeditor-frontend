@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from "react";
-import { useAuthContext } from "./AuthContext";
 import supabase from "../lib/supabase";
+import { useCollabContext } from "./CollaborationContext";
 
 const Context = createContext();
 
@@ -10,14 +10,14 @@ const ChatContext = ({ children }) => {
   const [messageList, setMessageList] = useState([]);
   const [channel, setChannel] = useState(null);
   const [isSubbed, setIsSubbed] = useState(false);
-  const { docName } = useAuthContext();
+  const { docId } = useCollabContext();
 
   useEffect(() => {
-    const channel = supabase.channel(docName, {
+    const channel = supabase.channel(docId, {
       config: { broadcast: { self: true } },
     });
     setChannel(channel);
-  }, [docName]);
+  }, [docId]);
 
   useEffect(() => {
     if (channel)
@@ -27,9 +27,9 @@ const ChatContext = ({ children }) => {
           setMessageList((list) => [...list, obj.payload]);
         })
         .subscribe((status) => {
+          console.log("CHANNEL ", status);
           if (status !== "SUBSCRIBED") return null;
           setIsSubbed(true);
-          console.log("subbed");
         });
   }, [channel]);
 
