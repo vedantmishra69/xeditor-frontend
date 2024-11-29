@@ -1,11 +1,16 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useChatContext } from "../contexts/ChatContext";
+import { useCollabContext } from "../contexts/CollaborationContext";
+import { User } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
-const ChatWindow = () => {
+const ChatWindow = ({ open }) => {
   const { messageList, channel, isSubbed } = useChatContext();
   const [input, setInput] = useState("");
   const { userData } = useAuthContext();
+  const { connectedUsersCount } = useCollabContext();
 
   const messageBoxList = messageList?.map((item, index) => (
     <div key={index} className="w-full my-1">
@@ -17,7 +22,7 @@ const ChatWindow = () => {
   const handleInput = (e) => setInput(e.target.value);
 
   const handleSend = () => {
-    if (isSubbed) {
+    if (isSubbed && input) {
       channel.send({
         type: "broadcast",
         event: "test",
@@ -33,6 +38,18 @@ const ChatWindow = () => {
 
   return (
     <div className="flex flex-col w-full h-[50vh] p-4">
+      {connectedUsersCount && (
+        <div className="flex flex-row justify-end">
+          <div
+            className="flex flex-row items-center bg-white px-2 py-1 rounded-md hover:bg-gray-200"
+            onClick={open}
+          >
+            <span className="text-lg mr-1">{connectedUsersCount}</span>
+            <User size={17} />
+            <ChevronDown size={13} />
+          </div>
+        </div>
+      )}
       <div className="flex-1 flex flex-col">{messageBoxList}</div>
       <div className="mt-auto flex flex-row w-full gap-2">
         <input

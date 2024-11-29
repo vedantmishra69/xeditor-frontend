@@ -19,10 +19,20 @@ const CollaborationContext = ({ children }) => {
   const [provider, setProvider] = useState(null);
   const [awareness, setAwareness] = useState(null);
   const [joined, setJoined] = useState(false);
-  const { editor } = useCodeContext();
+  const [connectedUsers, setConnectedUsers] = useState(null);
+  const [connectedUsersCount, setConnectedUsersCount] = useState(null);
+  const { editor, setLanguage } = useCodeContext();
   const { userData } = useAuthContext();
 
   useEffect(() => {
+    const upsertDocInfo = async (docId) => {
+      const { data, error } = await supabase
+        .from("doc_info")
+        .upsert({ id: docId }, { onConflict: "id", ignoreDuplicates: true });
+      if (error) console.log("upsert doc info error: ", error);
+      else console.log("doc info upserted: ", data);
+    };
+
     const fetchDocId = async (user_id) => {
       const { data, error } = await supabase
         .from("user_docs")
@@ -46,7 +56,11 @@ const CollaborationContext = ({ children }) => {
       if (error) console.log("upsert error: ", error);
       else {
         console.log("upsert data: ", data);
-        setDocId(await fetchDocId(user_id));
+        const doc_Id = await fetchDocId(user_id);
+        if (doc_Id) {
+          setDocId(doc_Id);
+          await upsertDocInfo(doc_Id);
+        }
       }
     };
     if (!userData?.id) return;
@@ -74,34 +88,56 @@ const CollaborationContext = ({ children }) => {
   }, [docId]);
 
   useEffect(() => {
+    const fetchLanguage = async () => {
+      const { data, error } = await supabase
+        .from("doc_info")
+        .select("language")
+        .eq("id", docId);
+      if (error) console.log("language fetch error: ", error);
+      else {
+        console.log("language fetch: ", data);
+        setLanguage(data[0]?.language);
+      }
+    };
+    if (!docId) return;
+    fetchLanguage();
+  }, [docId, setLanguage]);
+
+  useEffect(() => {
     if (!userData?.color || !awareness) return;
     awareness.setLocalStateField("color", userData?.color);
-  }, [awareness, userData?.color]);
+    awareness.setLocalStateField("name", userData?.name);
+    awareness.setLocalStateField("id", userData?.id);
+  }, [awareness, userData?.color, userData?.name, userData?.id]);
 
   useEffect(() => {
     if (!awareness) return;
     console.log("AWARENESS SET");
     const stateMap = awareness.getStates();
 
-    awareness.on("change", ({ added }) => {
+    awareness.on("update", () => {
+      setConnectedUsers(stateMap);
+      setConnectedUsersCount(stateMap.size);
+    });
+
+    awareness.on("change", ({ added, updated, removed }) => {
+      setConnectedUsers(stateMap);
+      setConnectedUsersCount(stateMap.size);
+
       for (const clientId of added) {
         removeCursorStyle(clientId);
-
-        const color = stateMap.get(clientId).color;
-        const styleToAdd = cursorStyle(clientId, color);
+        const clientObj = stateMap.get(clientId);
+        const styleToAdd = cursorStyle(clientId, clientObj.color);
         document.body.insertAdjacentHTML(
           "beforebegin",
           `<style>${styleToAdd}</style>`
         );
       }
-    });
 
-    awareness.on("change", ({ updated, removed }) => {
       for (const clientId of updated) {
         removeCursorStyle(clientId);
-
-        const color = stateMap.get(clientId).color;
-        const styleToAdd = cursorStyle(clientId, color);
+        const clientObj = stateMap.get(clientId);
+        const styleToAdd = cursorStyle(clientId, clientObj.color);
         document.body.insertAdjacentHTML(
           "beforebegin",
           `<style>${styleToAdd}</style>`
@@ -134,7 +170,14 @@ const CollaborationContext = ({ children }) => {
     };
   }, [provider, editor]);
 
-  const value = { docId, setDocId, joined, setJoined };
+  const value = {
+    docId,
+    setDocId,
+    joined,
+    setJoined,
+    connectedUsers,
+    connectedUsersCount,
+  };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };

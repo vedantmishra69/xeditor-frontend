@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useCodeContext } from "../contexts/CodeEditorContext";
 import { LANGUAGE_MAPPING, STATUS_MAPPING } from "../lib/constants";
+import { Settings as SettingsIcon } from "lucide-react";
 import { copyToClipboard, fetchResult, submitCode } from "../lib/util";
 import CodeEditor from "../components/CodeEditor";
 import toast from "react-hot-toast";
@@ -10,6 +11,8 @@ import { useChatContext } from "../contexts/ChatContext";
 import { GoogleLogin } from "@react-oauth/google";
 import Settings from "../components/Settings";
 import { useCollabContext } from "../contexts/CollaborationContext";
+import UserList from "../components/UserList";
+import supabase from "../lib/supabase";
 
 const CodeEditorPage = () => {
   const [input, setInput] = useState("");
@@ -24,12 +27,22 @@ const CodeEditorPage = () => {
     useAuthContext();
   const { docId, setDocId, joined, setJoined } = useCollabContext();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [userListOpen, setUserListOpen] = useState(false);
 
   const handleInput = (e) => setInput(e.target.value);
 
   const handleJoin = (e) => setJoinToken(e.target.value);
 
   const handleLanguage = (name) => {
+    const changeLanguage = async () => {
+      const { data, error } = await supabase
+        .from("doc_info")
+        .update({ language: name })
+        .eq("id", docId);
+      if (error) console.log("language update error: ", error);
+      else console.log("language updated ", data);
+    };
+    changeLanguage();
     setLanguage(name);
     setInput("");
     setOutput("");
@@ -100,7 +113,7 @@ const CodeEditorPage = () => {
   const languageOptions = [];
   for (const name in LANGUAGE_MAPPING) {
     languageOptions.push(
-      <option key={name} value={name} onClick={() => handleLanguage(name)}>
+      <option key={name} value={name}>
         {name}
       </option>
     );
@@ -108,6 +121,11 @@ const CodeEditorPage = () => {
 
   return (
     <div className="min-h-screen w-full flex justify-between items-center">
+      {userListOpen && (
+        <div className="fixed inset-0 z-10 flex justify-center items-center backdrop-brightness-50">
+          <UserList close={() => setUserListOpen(false)} />
+        </div>
+      )}
       {settingsOpen && (
         <div className="fixed inset-0 z-10 flex justify-center items-center backdrop-brightness-50">
           <Settings close={() => setSettingsOpen(false)} />
@@ -119,7 +137,7 @@ const CodeEditorPage = () => {
             <CodeEditor />
           </div>
           <div className="flex-1">
-            <ChatWindow />
+            <ChatWindow open={() => setUserListOpen(true)} />
           </div>
         </div>
         <div className="flex-1 h-screen flex flex-col p-4">
@@ -143,17 +161,19 @@ const CodeEditorPage = () => {
             >
               Join
             </button>
-            <button
-              onClick={handleLeave}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
-            >
-              Leave
-            </button>
+            {joined && (
+              <button
+                onClick={handleLeave}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
+              >
+                Leave
+              </button>
+            )}
             <button
               onClick={handleSettings}
               className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
             >
-              Settings
+              <SettingsIcon />
             </button>
             {isSignedIn ? (
               <div className="flex flex-row gap-2">
@@ -228,7 +248,8 @@ const CodeEditorPage = () => {
                 Language
               </label>
               <select
-                defaultValue={language}
+                value={language}
+                onChange={(e) => handleLanguage(e.target.value)}
                 className="w-full p-3 bg-white border border-gray-300 rounded-lg"
                 required
               >
