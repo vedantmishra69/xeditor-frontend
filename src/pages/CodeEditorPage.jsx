@@ -21,7 +21,7 @@ const CodeEditorPage = () => {
   const [memory, setMemory] = useState("");
   const [status, setStatus] = useState("");
   const [joinToken, setJoinToken] = useState("");
-  const { language, setLanguage, sourceCode, setSourceCode } = useCodeContext();
+  const { language, setLanguage, sourceCode } = useCodeContext();
   const { setMessageList } = useChatContext();
   const { handleSignInWithGoogle, handleSignOut, isSignedIn, userData } =
     useAuthContext();
@@ -46,7 +46,6 @@ const CodeEditorPage = () => {
     setLanguage(name);
     setInput("");
     setOutput("");
-    setSourceCode("");
     setTime("");
     setMemory("");
     setStatus("");
@@ -98,6 +97,7 @@ const CodeEditorPage = () => {
 
   const handleLeave = () => {
     setJoined(false);
+    setMessageList([]);
     toast.success("Room left successfully.");
   };
 
@@ -175,7 +175,7 @@ const CodeEditorPage = () => {
             >
               <SettingsIcon />
             </button>
-            {isSignedIn ? (
+            {isSignedIn && userData?.name ? (
               <div className="flex flex-row gap-2">
                 <div className="text-xl font-semibold">{userData.name}</div>
                 <button

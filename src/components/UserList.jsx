@@ -1,8 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useCollabContext } from "../contexts/CollaborationContext";
 import { X } from "lucide-react";
 
 const UserList = ({ close }) => {
-  const list = ["user1", "user2", "user3"];
   const { connectedUsers } = useCollabContext();
   const userList = [];
   for (const [key, item] of connectedUsers) {

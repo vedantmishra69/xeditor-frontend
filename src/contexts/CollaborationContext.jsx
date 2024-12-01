@@ -32,40 +32,32 @@ const CollaborationContext = ({ children }) => {
       if (error) console.log("upsert doc info error: ", error);
       else console.log("doc info upserted: ", data);
     };
-
-    const fetchDocId = async (user_id) => {
+    const fetchDocId = async (user_id, y_doc) => {
       const { data, error } = await supabase
         .from("user_docs")
         .select("id")
-        .eq("user_id", user_id);
-      if (error) console.log("doc id fetch error: ", error);
-      else {
-        console.log("DOC ID: ", data[0]?.id);
-        return data[0]?.id;
-      }
-    };
-
-    const upsertDoc = async (user_id, y_doc) => {
-      const { data, error } = await supabase
-        .from("user_docs")
-        .upsert(
-          { user_id: user_id, y_doc: y_doc },
-          { onConflict: "user_id", ignoreDuplicates: true }
-        );
-
-      if (error) console.log("upsert error: ", error);
-      else {
-        console.log("upsert data: ", data);
-        const doc_Id = await fetchDocId(user_id);
-        if (doc_Id) {
-          setDocId(doc_Id);
-          await upsertDocInfo(doc_Id);
+        .eq("user_id", user_id)
+        .eq("default", true);
+      if (error) console.log("doc check error: ", error);
+      else if (data?.length) {
+        console.log("doc check data: ", data);
+        setDocId(data[0]?.id);
+      } else {
+        const { data, error } = await supabase
+          .from("user_docs")
+          .insert({ user_id: user_id, y_doc: y_doc })
+          .select("id");
+        if (error) console.log("doc insert error: ", error);
+        else if (data) {
+          console.log("doc inserted: ", data);
+          setDocId(data[0]?.id);
+          await upsertDocInfo(data[0]?.id);
         }
       }
     };
     if (!userData?.id) return;
     if (!joined) {
-      upsertDoc(userData?.id, Buffer.from(Y.encodeStateAsUpdate(new Y.Doc())));
+      fetchDocId(userData?.id, Buffer.from(Y.encodeStateAsUpdate(new Y.Doc())));
     }
   }, [userData?.id, joined]);
 

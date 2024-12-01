@@ -24,6 +24,7 @@ const Settings = ({ close }) => {
       font_size: fontSize,
       word_wrap: wordWrap,
     };
+    console.log(newData);
     const { data, error } = await supabase
       .from("user_info")
       .update(newData)
@@ -40,11 +41,7 @@ const Settings = ({ close }) => {
   for (const theme in THEME_LIST) {
     const themeName = THEME_LIST[theme];
     themeOptions.push(
-      <option
-        key={themeName}
-        value={themeName}
-        onClick={() => setTheme(themeName)}
-      >
+      <option key={themeName} value={themeName}>
         {themeName.replaceAll("-", " ")}
       </option>
     );
@@ -111,7 +108,8 @@ const Settings = ({ close }) => {
             <div className="text-gray-500 font-normal">Theme</div>
             <div>
               <select
-                defaultValue={theme}
+                value={theme}
+                onChange={(e) => setTheme(e.target.value)}
                 className="bg-white p-2 border-2 border-gray-200 rounded-lg w-1/2"
               >
                 {themeOptions}
