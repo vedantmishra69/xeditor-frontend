@@ -15,16 +15,14 @@ const CodeEditor = () => {
   };
 
   return (
-    language && (
-      <Editor
-        language={LANGUAGE_MAPPING[language].monacoLanguage}
-        value={sourceCode}
-        onChange={(value) => setSourceCode(value)}
-        onMount={(editor) => setEditor(editor)}
-        beforeMount={(monaco) => setMonaco(monaco)}
-        options={options}
-      />
-    )
+    <Editor
+      language={LANGUAGE_MAPPING[language].monacoLanguage}
+      value={sourceCode}
+      onChange={(value) => setSourceCode(value)}
+      onMount={(editor) => setEditor(editor)}
+      beforeMount={(monaco) => setMonaco(monaco)}
+      options={options}
+    />
   );
 };
 

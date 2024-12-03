@@ -21,7 +21,8 @@ const ChatWindow = ({ open }) => {
 
   const handleInput = (e) => setInput(e.target.value);
 
-  const handleSend = () => {
+  const handleSend = (e) => {
+    e.preventDefault();
     if (isSubbed && input) {
       channel.send({
         type: "broadcast",
@@ -37,8 +38,8 @@ const ChatWindow = ({ open }) => {
   };
 
   return (
-    <div className="flex flex-col w-full h-[50vh] p-4">
-      {connectedUsersCount && (
+    <div className="flex flex-col w-full h-[40vh]">
+      {connectedUsersCount ? (
         <div className="flex flex-row justify-end">
           <div
             className="flex flex-row items-center bg-white px-2 py-1 rounded-md hover:bg-gray-200"
@@ -49,9 +50,14 @@ const ChatWindow = ({ open }) => {
             <ChevronDown size={13} />
           </div>
         </div>
-      )}
-      <div className="flex-1 flex flex-col">{messageBoxList}</div>
-      <div className="mt-auto flex flex-row w-full gap-2">
+      ) : null}
+      <div className="flex-1 flex flex-col overflow-y-auto">
+        {messageBoxList}
+      </div>
+      <form
+        onSubmit={handleSend}
+        className="mt-auto flex flex-row w-full gap-2"
+      >
         <input
           className="flex-1 bg-white border border-gray-300 rounded-lg p-2"
           placeholder="Enter message here..."
@@ -60,12 +66,12 @@ const ChatWindow = ({ open }) => {
           onChange={handleInput}
         />
         <button
+          type="submit"
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
-          onClick={handleSend}
         >
           Send
         </button>
-      </div>
+      </form>
     </div>
   );
 };

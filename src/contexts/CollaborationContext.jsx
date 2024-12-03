@@ -21,6 +21,8 @@ const CollaborationContext = ({ children }) => {
   const [joined, setJoined] = useState(false);
   const [connectedUsers, setConnectedUsers] = useState(null);
   const [connectedUsersCount, setConnectedUsersCount] = useState(null);
+  const [currentFileName, setCurrentFileName] = useState(null);
+  const [userFiles, setUserFiles] = useState(null);
   const { editor, setLanguage } = useCodeContext();
   const { userData } = useAuthContext();
 
@@ -30,7 +32,10 @@ const CollaborationContext = ({ children }) => {
         .from("doc_info")
         .upsert({ id: docId }, { onConflict: "id", ignoreDuplicates: true });
       if (error) console.log("upsert doc info error: ", error);
-      else console.log("doc info upserted: ", data);
+      else {
+        console.log("doc info upserted: ", data);
+        setDocId(docId);
+      }
     };
     const fetchDocId = async (user_id, y_doc) => {
       const { data, error } = await supabase
@@ -50,7 +55,6 @@ const CollaborationContext = ({ children }) => {
         if (error) console.log("doc insert error: ", error);
         else if (data) {
           console.log("doc inserted: ", data);
-          setDocId(data[0]?.id);
           await upsertDocInfo(data[0]?.id);
         }
       }
@@ -80,20 +84,39 @@ const CollaborationContext = ({ children }) => {
   }, [docId]);
 
   useEffect(() => {
-    const fetchLanguage = async () => {
+    const fetchFileInfo = async () => {
       const { data, error } = await supabase
         .from("doc_info")
-        .select("language")
+        .select("language,name")
         .eq("id", docId);
       if (error) console.log("language fetch error: ", error);
       else {
         console.log("language fetch: ", data);
         setLanguage(data[0]?.language);
+        setCurrentFileName(data[0]?.name);
       }
     };
     if (!docId) return;
-    fetchLanguage();
+    fetchFileInfo();
   }, [docId, setLanguage]);
+
+  useEffect(() => {
+    const fetchFiles = async (user_id) => {
+      const { data, error } = await supabase
+        .from("doc_info")
+        .select("id, name, user_docs!inner()")
+        .eq("user_docs.user_id", user_id)
+        .eq("user_docs.default", false);
+
+      if (error) console.log("fetch files error: ", error);
+      else {
+        console.log("fetched files: ", data);
+        setUserFiles(data);
+      }
+    };
+    if (!userData?.id) return;
+    fetchFiles(userData.id);
+  }, [userData?.id]);
 
   useEffect(() => {
     if (!userData?.color || !awareness) return;
@@ -169,6 +192,9 @@ const CollaborationContext = ({ children }) => {
     setJoined,
     connectedUsers,
     connectedUsersCount,
+    currentFileName,
+    userFiles,
+    setUserFiles,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

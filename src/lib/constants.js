@@ -11,219 +11,161 @@ export const SUPABASE_PROJECT_URL = import.meta.env.VITE_SUPABASE_PROJECT_URL;
 export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 export const LANGUAGE_MAPPING = {
-  // "Bash (5.0.0)": {
-  //   id: 46,
-  //   monacoLanguage: "shell",
-  // },
-  // "Basic (FBC 1.07.1)": {
-  //   id: 47,
-  //   monacoLanguage: "vb",
-  // },
   "C (Clang 7.0.1)": {
     id: 75,
     monacoLanguage: "cpp",
+    extension: ".c",
   },
   "C++ (Clang 7.0.1)": {
     id: 76,
     monacoLanguage: "cpp",
+    extension: ".cpp",
   },
   "C (GCC 7.4.0)": {
     id: 48,
     monacoLanguage: "cpp",
+    extension: ".c",
   },
   "C++ (GCC 7.4.0)": {
     id: 52,
     monacoLanguage: "cpp",
+    extension: ".cpp",
   },
   "C (GCC 8.3.0)": {
     id: 49,
     monacoLanguage: "cpp",
+    extension: ".c",
   },
   "C++ (GCC 8.3.0)": {
     id: 53,
     monacoLanguage: "cpp",
+    extension: ".cpp",
   },
   "C (GCC 9.2.0)": {
     id: 50,
     monacoLanguage: "cpp",
+    extension: ".c",
   },
   "C++ (GCC 9.2.0)": {
     id: 54,
     monacoLanguage: "cpp",
+    extension: ".cpp",
   },
   "Clojure (1.10.1)": {
     id: 86,
     monacoLanguage: "clojure",
+    extension: ".clj",
   },
   "C# (Mono 6.6.0.161)": {
     id: 51,
     monacoLanguage: "csharp",
+    extension: ".cs",
   },
-  // "Dart (2.19.2)": {
-  //   id: 90,
-  //   monacoLanguage: "dart",
-  // },
   "Elixir (1.9.4)": {
     id: 57,
     monacoLanguage: "elixir",
+    extension: ".ex",
   },
   "F# (.NET Core SDK 3.1.202)": {
     id: 87,
     monacoLanguage: "fsharp",
+    extension: ".fs",
   },
   "Go (1.13.5)": {
     id: 60,
     monacoLanguage: "go",
+    extension: ".go",
   },
-  // "Java (JDK 17.0.6)": {
-  //   id: 91,
-  //   monacoLanguage: "java",
-  // },
   "Java (OpenJDK 13.0.1)": {
     id: 62,
     monacoLanguage: "java",
+    extension: ".java",
   },
-  // "JavaFX (JDK 17.0.6, OpenJFX 22.0.2)": {
-  //   id: 96,
-  //   monacoLanguage: "java",
-  // },
   "JavaScript (Node.js 12.14.0)": {
     id: 63,
     monacoLanguage: "javascript",
+    extension: ".js",
   },
-  // "JavaScript (Node.js 18.15.0)": {
-  //   id: 93,
-  //   monacoLanguage: "javascript",
-  // },
-  // "JavaScript (Node.js 20.17.0)": {
-  //   id: 97,
-  //   monacoLanguage: "javascript",
-  // },
-  // "JavaScript (Node.js 22.08.0)": {
-  //   id: 102,
-  //   monacoLanguage: "javascript",
-  // },
   "Kotlin (1.3.70)": {
     id: 78,
     monacoLanguage: "kotlin",
+    extension: ".kt",
   },
   "Lua (5.3.5)": {
     id: 64,
     monacoLanguage: "lua",
+    extension: ".lua",
   },
   "Objective-C (Clang 7.0.1)": {
     id: 79,
     monacoLanguage: "objective-c",
+    extension: ".m",
   },
   "PHP (7.4.1)": {
     id: 68,
     monacoLanguage: "php",
+    extension: ".php",
   },
   "Pascal (FPC 3.0.4)": {
     id: 67,
     monacoLanguage: "pascal",
+    extension: ".pas",
   },
   "Perl (5.28.1)": {
     id: 85,
     monacoLanguage: "perl",
+    extension: ".pl",
   },
   "Python (2.7.17)": {
     id: 70,
     monacoLanguage: "python",
+    extension: ".py",
   },
   "Python (3.8.1)": {
     id: 71,
     monacoLanguage: "python",
+    extension: ".py",
   },
   "R (4.0.0)": {
     id: 80,
     monacoLanguage: "r",
+    extension: ".r",
   },
   "Ruby (2.7.0)": {
     id: 72,
     monacoLanguage: "ruby",
+    extension: ".rb",
   },
   "Rust (1.40.0)": {
     id: 73,
     monacoLanguage: "rust",
+    extension: ".rs",
   },
   "SQL (SQLite 3.27.2)": {
     id: 82,
     monacoLanguage: "sql",
+    extension: ".sql",
   },
   "Scala (2.13.2)": {
     id: 81,
     monacoLanguage: "scala",
+    extension: ".scala",
   },
   "Swift (5.2.3)": {
     id: 83,
     monacoLanguage: "swift",
+    extension: ".swift",
   },
   "TypeScript (3.7.4)": {
     id: 74,
     monacoLanguage: "typescript",
+    extension: ".ts",
   },
   "Visual Basic.Net (vbnc 0.0.0.5943)": {
     id: 84,
     monacoLanguage: "vb",
+    extension: ".vb",
   },
-  // Commented out languages not in the JSON data
-  // "C (Clang 18.1.8)": {
-  //   id: 104,
-  //   monacoLanguage: "cpp",
-  // },
-  // "C (GCC 14.1.0)": {
-  //   id: 103,
-  //   monacoLanguage: "cpp",
-  // },
-  // "C++ (Clang 7.0.1)": {
-  //   id: 76,
-  //   monacoLanguage: "cpp",
-  // },
-  // "C++ (GCC 14.1.0)": {
-  //   id: 105,
-  //   monacoLanguage: "cpp",
-  // },
-  // "C++ (GCC 7.4.0)": {
-  //   id: 52,
-  //   monacoLanguage: "cpp",
-  // },
-  // "C++ (GCC 8.3.0)": {
-  //   id: 53,
-  //   monacoLanguage: "cpp",
-  // },
-  // "C++ (GCC 9.2.0)": {
-  //   id: 54,
-  //   monacoLanguage: "cpp",
-  // },
-  // "Go (1.18.5)": {
-  //   id: 95,
-  //   monacoLanguage: "go",
-  // },
-  // "PHP (8.3.11)": {
-  //   id: 98,
-  //   monacoLanguage: "php",
-  // },
-  // "Python (3.11.2)": {
-  //   id: 92,
-  //   monacoLanguage: "python",
-  // },
-  // "Python (3.12.5)": {
-  //   id: 100,
-  //   monacoLanguage: "python",
-  // },
-  // "R (4.4.1)": {
-  //   id: 99,
-  //   monacoLanguage: "r",
-  // },
-  // "TypeScript (5.0.3)": {
-  //   id: 94,
-  //   monacoLanguage: "typescript",
-  // },
-  // "TypeScript (5.6.2)": {
-  //   id: 101,
-  //   monacoLanguage: "typescript",
-  // },
 };
 
 export const STATUS_MAPPING = {

@@ -27,16 +27,6 @@ const AuthContext = ({ children }) => {
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-    } catch (error) {
-      console.error("Error signing out:", error.message);
-      throw error;
-    }
-  };
-
   const signInAnon = async () => {
     try {
       const { data, error } = await supabase.auth.signInAnonymously();
@@ -123,7 +113,6 @@ const AuthContext = ({ children }) => {
     isSignedIn,
     isLoading,
     handleSignInWithGoogle,
-    handleSignOut,
     userData,
     setUserData,
   };

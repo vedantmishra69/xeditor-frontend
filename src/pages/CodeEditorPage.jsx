@@ -13,6 +13,8 @@ import Settings from "../components/Settings";
 import { useCollabContext } from "../contexts/CollaborationContext";
 import UserList from "../components/UserList";
 import supabase from "../lib/supabase";
+import NewFile from "../components/NewFile";
+import OpenFile from "../components/OpenFile";
 
 const CodeEditorPage = () => {
   const [input, setInput] = useState("");
@@ -23,16 +25,37 @@ const CodeEditorPage = () => {
   const [joinToken, setJoinToken] = useState("");
   const { language, setLanguage, sourceCode } = useCodeContext();
   const { setMessageList } = useChatContext();
-  const { handleSignInWithGoogle, handleSignOut, isSignedIn, userData } =
-    useAuthContext();
-  const { docId, setDocId, joined, setJoined } = useCollabContext();
+  const { handleSignInWithGoogle, isSignedIn, userData } = useAuthContext();
+  const { docId, setDocId, joined, setJoined, currentFileName } =
+    useCollabContext();
+
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [userListOpen, setUserListOpen] = useState(false);
+  const [newFileOpen, setNewFileOpen] = useState(false);
+  const [fileListOpen, setFileListOpen] = useState(false);
 
   const handleInput = (e) => setInput(e.target.value);
 
   const handleJoin = (e) => setJoinToken(e.target.value);
 
+  const handleSignOut = () => {
+    const signOut = async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) console.log("error signing out: ", error);
+      else {
+        setMessageList([]);
+        setInput("");
+        setOutput("");
+        setTime("");
+        setMemory("");
+        setStatus("");
+        setJoinToken("");
+      }
+    };
+    signOut();
+  };
+
+  // TODO: update extension in file name in db upon language change
   const handleLanguage = (name) => {
     const changeLanguage = async () => {
       const { data, error } = await supabase
@@ -110,6 +133,10 @@ const CodeEditorPage = () => {
     toast.success(response.message);
   };
 
+  const handleNew = () => setNewFileOpen(true);
+
+  const handleOpenFiles = () => setFileListOpen(true);
+
   const languageOptions = [];
   for (const name in LANGUAGE_MAPPING) {
     languageOptions.push(
@@ -121,6 +148,19 @@ const CodeEditorPage = () => {
 
   return (
     <div className="min-h-screen w-full flex justify-between items-center">
+      {fileListOpen && (
+        <div className="fixed inset-0 z-10 flex justify-center items-center backdrop-brightness-50">
+          <OpenFile close={() => setFileListOpen(false)} />
+        </div>
+      )}
+      {newFileOpen && (
+        <div className="fixed inset-0 z-10 flex justify-center items-center backdrop-brightness-50">
+          <NewFile
+            close={() => setNewFileOpen(false)}
+            languageOptions={languageOptions}
+          />
+        </div>
+      )}
       {userListOpen && (
         <div className="fixed inset-0 z-10 flex justify-center items-center backdrop-brightness-50">
           <UserList close={() => setUserListOpen(false)} />
@@ -132,8 +172,23 @@ const CodeEditorPage = () => {
         </div>
       )}
       <div className="min-h-screen w-full bg-gray-100 flex flex-row justify-between">
-        <div className="flex-1 flex flex-col">
-          <div className="flex-1 flex justify-center p-4">
+        <div className="flex-1 flex flex-col gap-4 p-4">
+          <div className="flex flex-row gap-4">
+            <button
+              onClick={handleNew}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
+            >
+              New
+            </button>
+            <button
+              onClick={handleOpenFiles}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
+            >
+              Open
+            </button>
+            {currentFileName}
+          </div>
+          <div className="flex-1 flex justify-center">
             <CodeEditor />
           </div>
           <div className="flex-1">

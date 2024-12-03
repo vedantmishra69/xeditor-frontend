@@ -4,6 +4,7 @@ import { HexColorPicker } from "react-colorful";
 import { useAuthContext } from "../contexts/AuthContext";
 import { THEME_LIST } from "../lib/constants";
 import supabase from "../lib/supabase";
+import toast from "react-hot-toast";
 
 const Settings = ({ close }) => {
   const [userSettings, setUserSettings] = useState(true);
@@ -34,6 +35,7 @@ const Settings = ({ close }) => {
     else {
       console.log(data);
       setUserData(data[0]);
+      toast.success("Changes applied successfully");
     }
   };
 
