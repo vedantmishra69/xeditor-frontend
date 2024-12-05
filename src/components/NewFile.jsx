@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import { useState } from "react";
-import { DEFAULT_LANGUAGE, LANGUAGE_MAPPING } from "../lib/constants";
+import { DEFAULT_LANGUAGE } from "../lib/constants";
 import { X } from "lucide-react";
 import supabase from "../lib/supabase";
 import { useAuthContext } from "../contexts/AuthContext";
@@ -22,14 +22,14 @@ const NewFile = ({ close, languageOptions }) => {
     const createNewFile = async (user_id, y_doc) => {
       const { data, error } = await supabase
         .from("user_docs")
-        .insert({ user_id: user_id, y_doc: y_doc, default: false })
+        .insert({ user_id: user_id, y_doc: y_doc, is_default: false })
         .select("id");
       const id = data[0]?.id;
       if (error) console.log("New doc creation error: ", error);
       else if (id) {
         const { data, error } = await supabase.from("doc_info").insert({
           id: id,
-          name: fileName + LANGUAGE_MAPPING[language].extension,
+          name: fileName,
           language: language,
         });
         if (error) console.log("insert new doc info error: ", error);

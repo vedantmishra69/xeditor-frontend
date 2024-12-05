@@ -42,7 +42,7 @@ const CollaborationContext = ({ children }) => {
         .from("user_docs")
         .select("id")
         .eq("user_id", user_id)
-        .eq("default", true);
+        .eq("is_default", true);
       if (error) console.log("doc check error: ", error);
       else if (data?.length) {
         console.log("doc check data: ", data);
@@ -90,7 +90,7 @@ const CollaborationContext = ({ children }) => {
         .select("language,name")
         .eq("id", docId);
       if (error) console.log("language fetch error: ", error);
-      else {
+      else if (data?.[0]?.language) {
         console.log("language fetch: ", data);
         setLanguage(data[0]?.language);
         setCurrentFileName(data[0]?.name);
@@ -106,7 +106,7 @@ const CollaborationContext = ({ children }) => {
         .from("doc_info")
         .select("id, name, user_docs!inner()")
         .eq("user_docs.user_id", user_id)
-        .eq("user_docs.default", false);
+        .eq("user_docs.is_default", false);
 
       if (error) console.log("fetch files error: ", error);
       else {

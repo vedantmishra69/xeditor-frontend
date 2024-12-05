@@ -54,8 +54,6 @@ const CodeEditorPage = () => {
     };
     signOut();
   };
-
-  // TODO: update extension in file name in db upon language change
   const handleLanguage = (name) => {
     const changeLanguage = async () => {
       const { data, error } = await supabase
@@ -133,9 +131,21 @@ const CodeEditorPage = () => {
     toast.success(response.message);
   };
 
-  const handleNew = () => setNewFileOpen(true);
+  const handleNew = () => {
+    if (!isSignedIn)
+      toast.success(
+        "Sign in to create multiple files and access it across devices."
+      );
+    else setNewFileOpen(true);
+  };
 
-  const handleOpenFiles = () => setFileListOpen(true);
+  const handleOpenFiles = () => {
+    if (!isSignedIn)
+      toast.success(
+        "Sign in to create multiple files and access it across devices."
+      );
+    else setFileListOpen(true);
+  };
 
   const languageOptions = [];
   for (const name in LANGUAGE_MAPPING) {
@@ -186,7 +196,7 @@ const CodeEditorPage = () => {
             >
               Open
             </button>
-            {currentFileName}
+            {currentFileName + LANGUAGE_MAPPING[language].extension}
           </div>
           <div className="flex-1 flex justify-center">
             <CodeEditor />
