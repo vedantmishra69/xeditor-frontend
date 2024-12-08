@@ -22,9 +22,17 @@ const CollaborationContext = ({ children }) => {
   const [connectedUsers, setConnectedUsers] = useState(null);
   const [connectedUsersCount, setConnectedUsersCount] = useState(null);
   const [currentFileName, setCurrentFileName] = useState(null);
-  const [userFiles, setUserFiles] = useState(null);
+  const [isDefaultDoc, setIsDefaultDoc] = useState(true);
   const { editor, setLanguage } = useCodeContext();
   const { userData } = useAuthContext();
+
+  const getLocalDoc = () => {
+    const doc = localStorage.getItem("xeditor-default");
+    if (doc) {
+      const obj = JSON.parse(doc);
+      return new Uint8Array(obj.data);
+    } else return Y.encodeStateAsUpdate(new Y.Doc());
+  };
 
   useEffect(() => {
     const upsertDocInfo = async (docId) => {
@@ -61,9 +69,31 @@ const CollaborationContext = ({ children }) => {
     };
     if (!userData?.id) return;
     if (!joined) {
-      fetchDocId(userData?.id, Buffer.from(Y.encodeStateAsUpdate(new Y.Doc())));
+      fetchDocId(userData?.id, Buffer.from(getLocalDoc()));
     }
   }, [userData?.id, joined]);
+
+  // useEffect(() => {
+  //   const func = async () => {
+  //     const { data, error } = await supabase.auth.getUser();
+  //     if (error) console.log("Error getting user: ", error);
+  //     else {
+  //       const date1 = new Date(data.user.last_sign_in_at);
+  //       const date2 = new Date(data.user.created_at);
+  //       console.log(Math.abs(date2.getTime() - date1.getTime()) / (1000 * 60));
+  //       if (Math.abs(date2.getTime() - date1.getTime()) / (1000 * 60) < 1) {
+  //         console.log("first time!!");
+  //         const doc = localStorage.getItem("xeditor-default");
+  //         console.log(doc);
+  //         if (doc) {
+  //           const obj = JSON.parse(doc);
+  //           Y.applyUpdate(ydoc.current, new Uint8Array(obj.data));
+  //         }
+  //       }
+  //     }
+  //   };
+  //   if (userData?.id && provider) func();
+  // }, [userData?.id]);
 
   useEffect(() => {
     if (!docId) return;
@@ -99,24 +129,6 @@ const CollaborationContext = ({ children }) => {
     if (!docId) return;
     fetchFileInfo();
   }, [docId, setLanguage]);
-
-  useEffect(() => {
-    const fetchFiles = async (user_id) => {
-      const { data, error } = await supabase
-        .from("doc_info")
-        .select("id, name, user_docs!inner()")
-        .eq("user_docs.user_id", user_id)
-        .eq("user_docs.is_default", false);
-
-      if (error) console.log("fetch files error: ", error);
-      else {
-        console.log("fetched files: ", data);
-        setUserFiles(data);
-      }
-    };
-    if (!userData?.id) return;
-    fetchFiles(userData.id);
-  }, [userData?.id]);
 
   useEffect(() => {
     if (!userData?.color || !awareness) return;
@@ -186,6 +198,7 @@ const CollaborationContext = ({ children }) => {
   }, [provider, editor]);
 
   const value = {
+    ydoc,
     docId,
     setDocId,
     joined,
@@ -193,8 +206,9 @@ const CollaborationContext = ({ children }) => {
     connectedUsers,
     connectedUsersCount,
     currentFileName,
-    userFiles,
-    setUserFiles,
+    isDefaultDoc,
+    setIsDefaultDoc,
+    provider,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useCodeContext } from "../contexts/CodeEditorContext";
 import { LANGUAGE_MAPPING, STATUS_MAPPING } from "../lib/constants";
-import { Settings as SettingsIcon } from "lucide-react";
+import { Download, Settings as SettingsIcon } from "lucide-react";
 import { copyToClipboard, fetchResult, submitCode } from "../lib/util";
 import CodeEditor from "../components/CodeEditor";
 import toast from "react-hot-toast";
@@ -15,6 +15,8 @@ import UserList from "../components/UserList";
 import supabase from "../lib/supabase";
 import NewFile from "../components/NewFile";
 import OpenFile from "../components/OpenFile";
+import * as Y from "yjs";
+import { Buffer } from "buffer";
 
 const CodeEditorPage = () => {
   const [input, setInput] = useState("");
@@ -26,8 +28,15 @@ const CodeEditorPage = () => {
   const { language, setLanguage, sourceCode } = useCodeContext();
   const { setMessageList } = useChatContext();
   const { handleSignInWithGoogle, isSignedIn, userData } = useAuthContext();
-  const { docId, setDocId, joined, setJoined, currentFileName } =
-    useCollabContext();
+  const {
+    ydoc,
+    docId,
+    setDocId,
+    joined,
+    setJoined,
+    currentFileName,
+    provider,
+  } = useCollabContext();
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [userListOpen, setUserListOpen] = useState(false);
@@ -37,6 +46,23 @@ const CodeEditorPage = () => {
   const handleInput = (e) => setInput(e.target.value);
 
   const handleJoin = (e) => setJoinToken(e.target.value);
+
+  const handleSignIn = (response) => {
+    const deleteUser = async () => {
+      const { data, error } = await supabase.rpc("delete_user", {
+        user_id: userData?.id,
+      });
+      if (error) console.log("Error deleting user: ", error);
+      else console.log("User deleted successfully: ", data);
+    };
+    localStorage.setItem(
+      "xeditor-default",
+      JSON.stringify(Buffer.from(Y.encodeStateAsUpdate(ydoc.current)))
+    );
+    provider.destroy();
+    deleteUser();
+    handleSignInWithGoogle(response);
+  };
 
   const handleSignOut = () => {
     const signOut = async () => {
@@ -73,12 +99,12 @@ const CodeEditorPage = () => {
   };
 
   const handleSubmit = async () => {
-    if (sourceCode) {
+    if (sourceCode && userData) {
       setOutput("Loading...");
       setTime("");
       setMemory("");
       setStatus("");
-      const data = await submitCode(language, sourceCode, input);
+      const data = await submitCode(language, sourceCode, input, userData);
       if (!data.error && data.token) {
         const result = await fetchResult(data.token);
         console.log(data.token);
@@ -147,6 +173,19 @@ const CodeEditorPage = () => {
     else setFileListOpen(true);
   };
 
+  const handleDownload = () => {
+    if (sourceCode && currentFileName && language) {
+      const blob = new Blob([sourceCode], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${currentFileName}${LANGUAGE_MAPPING[language].extension}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    }
+  };
+
   const languageOptions = [];
   for (const name in LANGUAGE_MAPPING) {
     languageOptions.push(
@@ -196,7 +235,15 @@ const CodeEditorPage = () => {
             >
               Open
             </button>
-            {currentFileName + LANGUAGE_MAPPING[language].extension}
+            {currentFileName &&
+              currentFileName + LANGUAGE_MAPPING[language].extension}
+
+            <button
+              onClick={handleDownload}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
+            >
+              <Download />
+            </button>
           </div>
           <div className="flex-1 flex justify-center">
             <CodeEditor />
@@ -252,7 +299,7 @@ const CodeEditorPage = () => {
               </div>
             ) : (
               <GoogleLogin
-                onSuccess={handleSignInWithGoogle}
+                onSuccess={handleSignIn}
                 onError={() => {
                   console.log("Login Failed");
                 }}

@@ -7,8 +7,10 @@ import {
 } from "unique-names-generator";
 import randomColor from "randomcolor";
 
-export const submitCode = async (language, sourceCode, stdin) => {
+export const submitCode = async (language, sourceCode, stdin, userData) => {
   const body = {
+    user_id: userData?.id,
+    user_name: userData?.name,
     language_id: LANGUAGE_MAPPING[language].id,
     source_code: encodeUTF8ToBase64(sourceCode),
     stdin: encodeUTF8ToBase64(stdin),

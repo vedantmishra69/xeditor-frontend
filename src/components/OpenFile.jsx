@@ -1,13 +1,15 @@
 /* eslint-disable react/prop-types */
-import { useChatContext } from "../contexts/ChatContext";
 import { useCollabContext } from "../contexts/CollaborationContext";
 import { X, Trash2 } from "lucide-react";
 import supabase from "../lib/supabase";
 import toast from "react-hot-toast";
+import { useState, useEffect } from "react";
+import { useAuthContext } from "../contexts/AuthContext";
 
 const OpenFile = ({ close }) => {
-  const { userFiles, setDocId } = useCollabContext();
-  const { setMessageList } = useChatContext();
+  const [userFiles, setUserFiles] = useState(null);
+  const { setDocId, setIsDefaultDoc } = useCollabContext();
+  const { userData } = useAuthContext();
 
   const deleteFile = (item) => {
     return new Promise((res, rej) => {
@@ -28,7 +30,7 @@ const OpenFile = ({ close }) => {
       key={index}
       onClick={() => {
         setDocId(item.id);
-        setMessageList([]);
+        setIsDefaultDoc(item.user_docs.is_default);
         close();
       }}
       className="flex flex-row w-[20vw] p-4 hover:bg-gray-100 rounded-lg justify-between"
@@ -46,6 +48,24 @@ const OpenFile = ({ close }) => {
       /> */}
     </div>
   ));
+
+  useEffect(() => {
+    const fetchFiles = async (user_id) => {
+      const { data, error } = await supabase
+        .from("doc_info")
+        .select("id, name, user_docs!inner(is_default)")
+        .eq("user_docs.user_id", user_id);
+
+      if (error) console.log("fetch files error: ", error);
+      else {
+        console.log("fetched files: ", data);
+        setUserFiles(data);
+      }
+    };
+    if (!userData?.id) return;
+    fetchFiles(userData.id);
+  }, [userData?.id]);
+
   return (
     <div className="flex flex-col bg-white p-4 rounded-lg gap-1">
       <div className="justify-end flex">

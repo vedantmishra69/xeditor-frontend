@@ -9,6 +9,7 @@ const Context = createContext(null);
 const AuthContext = ({ children }) => {
   const [docName, setDocName] = useState(generateUUID());
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isFirstSignIn, setIsFirstSignIn] = useState(false);
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const prevData = useRef(null);
@@ -58,6 +59,15 @@ const AuthContext = ({ children }) => {
     }
   };
 
+  const setIsFirstSignInFunction = async (user) => {
+    const date1 = new Date(user.last_sign_in_at);
+    const date2 = new Date(user.created_at);
+    if (Math.abs(date2.getTime() - date1.getTime()) / (1000 * 60) < 1) {
+      console.log("first time!!");
+      setIsFirstSignIn(true);
+    }
+  };
+
   useEffect(() => {
     const handleAuthStateChange = (event, session) => {
       console.log(event);
@@ -74,6 +84,7 @@ const AuthContext = ({ children }) => {
             setIsSignedIn(!session.user.is_anonymous);
             setTimeout(async () => {
               await initializeValues(session);
+              await setIsFirstSignInFunction(session.user);
               setIsLoading(false);
             }, 0);
           }
@@ -83,6 +94,7 @@ const AuthContext = ({ children }) => {
           setIsSignedIn(!session.user.is_anonymous);
           setTimeout(async () => {
             await initializeValues(session);
+            await setIsFirstSignInFunction(session.user);
           }, 0);
           break;
         }
@@ -115,6 +127,7 @@ const AuthContext = ({ children }) => {
     handleSignInWithGoogle,
     userData,
     setUserData,
+    isFirstSignIn,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
