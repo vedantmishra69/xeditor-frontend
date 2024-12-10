@@ -22,7 +22,7 @@ const CollaborationContext = ({ children }) => {
   const [connectedUsers, setConnectedUsers] = useState(null);
   const [connectedUsersCount, setConnectedUsersCount] = useState(null);
   const [currentFileName, setCurrentFileName] = useState(null);
-  const [isDefaultDoc, setIsDefaultDoc] = useState(true);
+  const [isDefaultDoc, setIsDefaultDoc] = useState(true); // might remove this
   const { editor, setLanguage } = useCodeContext();
   const { userData } = useAuthContext();
 
@@ -94,6 +94,8 @@ const CollaborationContext = ({ children }) => {
   //   };
   //   if (userData?.id && provider) func();
   // }, [userData?.id]);
+
+  // TODO: figure out how to handle when user deletes or changes name of current file.
 
   useEffect(() => {
     if (!docId) return;
@@ -206,6 +208,7 @@ const CollaborationContext = ({ children }) => {
     connectedUsers,
     connectedUsersCount,
     currentFileName,
+    setCurrentFileName,
     isDefaultDoc,
     setIsDefaultDoc,
     provider,

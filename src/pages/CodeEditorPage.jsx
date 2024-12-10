@@ -128,7 +128,7 @@ const CodeEditorPage = () => {
   };
 
   const handleTokenSubmit = () => {
-    if (joinToken && !joined) {
+    if (joinToken) {
       setDocId(joinToken);
       setJoined(true);
       setInput("");
