@@ -17,6 +17,7 @@ import NewFile from "../components/NewFile";
 import OpenFile from "../components/OpenFile";
 import * as Y from "yjs";
 import { Buffer } from "buffer";
+import JoinWindow from "../components/JoinWindow";
 
 const CodeEditorPage = () => {
   const [input, setInput] = useState("");
@@ -24,28 +25,36 @@ const CodeEditorPage = () => {
   const [time, setTime] = useState("");
   const [memory, setMemory] = useState("");
   const [status, setStatus] = useState("");
-  const [joinToken, setJoinToken] = useState("");
   const { language, setLanguage, sourceCode } = useCodeContext();
   const { setMessageList } = useChatContext();
   const { handleSignInWithGoogle, isSignedIn, userData } = useAuthContext();
-  const {
-    ydoc,
-    docId,
-    setDocId,
-    joined,
-    setJoined,
-    currentFileName,
-    provider,
-  } = useCollabContext();
+  const { ydoc, docId, joined, setJoined, currentFileName, provider } =
+    useCollabContext();
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [userListOpen, setUserListOpen] = useState(false);
   const [newFileOpen, setNewFileOpen] = useState(false);
   const [fileListOpen, setFileListOpen] = useState(false);
+  const [joinOpen, setJoinOpen] = useState(false);
+
+  const clearInput = () => setInput("");
+
+  const clearOutput = () => {
+    setOutput("");
+    setTime("");
+    setMemory("");
+    setStatus("");
+  };
+
+  const clearChats = () => setMessageList([]);
+
+  const clearCodeEditorPage = () => {
+    clearInput();
+    clearOutput();
+    clearChats();
+  };
 
   const handleInput = (e) => setInput(e.target.value);
-
-  const handleJoin = (e) => setJoinToken(e.target.value);
 
   const handleSignIn = (response) => {
     const deleteUser = async () => {
@@ -68,22 +77,14 @@ const CodeEditorPage = () => {
     const signOut = async () => {
       const { error } = await supabase.auth.signOut();
       if (error) console.log("error signing out: ", error);
-      else {
-        setMessageList([]);
-        setInput("");
-        setOutput("");
-        setTime("");
-        setMemory("");
-        setStatus("");
-        setJoinToken("");
-      }
+      else clearCodeEditorPage();
     };
     signOut();
   };
   const handleLanguage = (name) => {
     const changeLanguage = async () => {
       const { data, error } = await supabase
-        .from("doc_info")
+        .from("doc_public_info")
         .update({ language: name })
         .eq("id", docId);
       if (error) console.log("language update error: ", error);
@@ -91,19 +92,11 @@ const CodeEditorPage = () => {
     };
     changeLanguage();
     setLanguage(name);
-    setInput("");
-    setOutput("");
-    setTime("");
-    setMemory("");
-    setStatus("");
   };
 
   const handleSubmit = async () => {
     if (sourceCode && userData) {
-      setOutput("Loading...");
-      setTime("");
-      setMemory("");
-      setStatus("");
+      clearOutput();
       const data = await submitCode(language, sourceCode, input, userData);
       if (!data.error && data.token) {
         const result = await fetchResult(data.token);
@@ -124,21 +117,6 @@ const CodeEditorPage = () => {
           setStatus(result.status_id);
         }
       }
-    }
-  };
-
-  const handleTokenSubmit = () => {
-    if (joinToken) {
-      setDocId(joinToken);
-      setJoined(true);
-      setInput("");
-      setOutput("");
-      setTime("");
-      setMemory("");
-      setStatus("");
-      setMessageList([]);
-      setJoinToken("");
-      toast.success("Room joined successfully.");
     }
   };
 
@@ -220,6 +198,14 @@ const CodeEditorPage = () => {
           <Settings close={() => setSettingsOpen(false)} />
         </div>
       )}
+      {joinOpen && (
+        <div className="fixed inset-0 z-10 flex justify-center items-center backdrop-brightness-50">
+          <JoinWindow
+            clearCodeEditorPage={clearCodeEditorPage}
+            close={() => setJoinOpen(false)}
+          />
+        </div>
+      )}
       <div className="min-h-screen w-full bg-gray-100 flex flex-row justify-between">
         <div className="flex-1 flex flex-col gap-4 p-4">
           <div className="flex flex-row gap-4">
@@ -260,25 +246,20 @@ const CodeEditorPage = () => {
             >
               Invite
             </button>
-            <input
-              type="text"
-              value={joinToken}
-              onChange={handleJoin}
-              placeholder="Enter invite token here..."
-              className="flex-1 bg-white border border-gray-300 rounded-lg p-2 w-1/2"
-            />
-            <button
-              onClick={handleTokenSubmit}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
-            >
-              Join
-            </button>
-            {joined && (
+
+            {joined ? (
               <button
                 onClick={handleLeave}
                 className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
               >
                 Leave
+              </button>
+            ) : (
+              <button
+                onClick={() => setJoinOpen(true)}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
+              >
+                Join
               </button>
             )}
             <button

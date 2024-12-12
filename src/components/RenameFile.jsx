@@ -10,7 +10,7 @@ const RenameFile = ({ item, close, updateName }) => {
     e.preventDefault();
     const renameFile = async () => {
       const { data, error } = await supabase
-        .from("doc_info")
+        .from("doc_public_info")
         .update({ name: newName })
         .eq("id", item.id)
         .select("name");

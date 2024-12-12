@@ -35,14 +35,14 @@ const CollaborationContext = ({ children }) => {
   };
 
   useEffect(() => {
-    const upsertDocInfo = async (docId) => {
+    const upsertDocInfo = async (doc_Id) => {
       const { data, error } = await supabase
-        .from("doc_info")
-        .upsert({ id: docId }, { onConflict: "id", ignoreDuplicates: true });
+        .from("doc_public_info")
+        .upsert({ id: doc_Id }, { onConflict: "id", ignoreDuplicates: true });
       if (error) console.log("upsert doc info error: ", error);
       else {
         console.log("doc info upserted: ", data);
-        setDocId(docId);
+        setDocId(doc_Id);
       }
     };
     const fetchDocId = async (user_id, y_doc) => {
@@ -73,36 +73,13 @@ const CollaborationContext = ({ children }) => {
     }
   }, [userData?.id, joined]);
 
-  // useEffect(() => {
-  //   const func = async () => {
-  //     const { data, error } = await supabase.auth.getUser();
-  //     if (error) console.log("Error getting user: ", error);
-  //     else {
-  //       const date1 = new Date(data.user.last_sign_in_at);
-  //       const date2 = new Date(data.user.created_at);
-  //       console.log(Math.abs(date2.getTime() - date1.getTime()) / (1000 * 60));
-  //       if (Math.abs(date2.getTime() - date1.getTime()) / (1000 * 60) < 1) {
-  //         console.log("first time!!");
-  //         const doc = localStorage.getItem("xeditor-default");
-  //         console.log(doc);
-  //         if (doc) {
-  //           const obj = JSON.parse(doc);
-  //           Y.applyUpdate(ydoc.current, new Uint8Array(obj.data));
-  //         }
-  //       }
-  //     }
-  //   };
-  //   if (userData?.id && provider) func();
-  // }, [userData?.id]);
-
-  // TODO: figure out how to handle when user deletes or changes name of current file.
-
   useEffect(() => {
     if (!docId) return;
     const provider = new HocuspocusProvider({
       url: `${SOCKET_URL}/collab/doc`,
       name: docId,
       document: new Y.Doc(),
+      token: "Bearer 1234abc",
     });
     console.log("PROVIDER SET :", provider);
     ydoc.current = provider.document;
@@ -118,7 +95,7 @@ const CollaborationContext = ({ children }) => {
   useEffect(() => {
     const fetchFileInfo = async () => {
       const { data, error } = await supabase
-        .from("doc_info")
+        .from("doc_public_info")
         .select("language,name")
         .eq("id", docId);
       if (error) console.log("language fetch error: ", error);

@@ -110,7 +110,7 @@ const OpenFile = ({ close }) => {
   useEffect(() => {
     const fetchFiles = async (user_id) => {
       const { data, error } = await supabase
-        .from("doc_info")
+        .from("doc_public_info")
         .select("id, name, user_docs!inner(is_default)")
         .eq("user_docs.user_id", user_id);
 

@@ -27,7 +27,7 @@ const NewFile = ({ close, languageOptions }) => {
       const id = data[0]?.id;
       if (error) console.log("New doc creation error: ", error);
       else if (id) {
-        const { data, error } = await supabase.from("doc_info").insert({
+        const { data, error } = await supabase.from("doc_public_info").insert({
           id: id,
           name: fileName,
           language: language,
