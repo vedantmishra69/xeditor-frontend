@@ -13,6 +13,7 @@ const ChatContext = ({ children }) => {
   const { docId } = useCollabContext();
 
   useEffect(() => {
+    if (!docId) return;
     const channel = supabase.channel(docId, {
       config: { broadcast: { self: true } },
     });
@@ -22,7 +23,7 @@ const ChatContext = ({ children }) => {
   useEffect(() => {
     if (channel)
       channel
-        .on("broadcast", { event: "test" }, (obj) => {
+        .on("broadcast", { event: "chat" }, (obj) => {
           console.log(obj.payload);
           setMessageList((list) => [...list, obj.payload]);
         })

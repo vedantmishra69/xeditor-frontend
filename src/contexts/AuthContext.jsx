@@ -2,12 +2,11 @@
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import supabase from "../lib/supabase";
-import { generateUUID, getRandomColor, getRandomName } from "../lib/util";
+import { getRandomColor, getRandomName } from "../lib/util";
 
 const Context = createContext(null);
 
 const AuthContext = ({ children }) => {
-  const [docName, setDocName] = useState(generateUUID());
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isFirstSignIn, setIsFirstSignIn] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -119,8 +118,6 @@ const AuthContext = ({ children }) => {
   }, []);
 
   const value = {
-    docName,
-    setDocName,
     supabase,
     isSignedIn,
     isLoading,

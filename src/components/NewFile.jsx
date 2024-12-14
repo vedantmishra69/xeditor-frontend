@@ -24,9 +24,12 @@ const NewFile = ({ close, languageOptions }) => {
         .from("user_docs")
         .insert({ user_id: user_id, y_doc: y_doc, is_default: false })
         .select("id");
-      const id = data[0]?.id;
-      if (error) console.log("New doc creation error: ", error);
-      else if (id) {
+      const id = data ? data[0]?.id : null;
+      if (error) {
+        console.log("New doc creation error: ", error);
+        toast.error("Can't add more than 30 documents");
+        close();
+      } else if (id) {
         const { data, error } = await supabase.from("doc_public_info").insert({
           id: id,
           name: fileName,

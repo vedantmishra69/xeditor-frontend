@@ -189,6 +189,7 @@ const CollaborationContext = ({ children }) => {
     isDefaultDoc,
     setIsDefaultDoc,
     provider,
+    awareness,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

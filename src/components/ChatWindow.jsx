@@ -26,7 +26,7 @@ const ChatWindow = ({ open }) => {
     if (isSubbed && input) {
       channel.send({
         type: "broadcast",
-        event: "test",
+        event: "chat",
         payload: {
           user: userData?.name,
           message: input,

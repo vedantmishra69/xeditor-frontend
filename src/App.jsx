@@ -7,6 +7,7 @@ import AuthContext from "./contexts/AuthContext";
 import ChatContext from "./contexts/ChatContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GOOGLE_CLIENT_ID } from "./lib/constants";
+import StatesContext from "./contexts/StatesContext";
 
 function App() {
   return (
@@ -19,7 +20,9 @@ function App() {
           <CodeEditorContext>
             <CollaborationContext>
               <ChatContext>
-                <CodeEditorPage />
+                <StatesContext>
+                  <CodeEditorPage />
+                </StatesContext>
               </ChatContext>
             </CollaborationContext>
           </CodeEditorContext>

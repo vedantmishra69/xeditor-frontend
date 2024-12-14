@@ -335,7 +335,7 @@ const CodeEditorPage = () => {
             <div>{time ? `Time: ${time}s` : ""}</div>
             <div>{memory ? `Memory: ${memory}kB` : ""}</div>
           </div>
-          <div className="mt-auto w-full max-w-3xl">
+          <div className="flex flex-col gap-3 mt-auto w-full max-w-3xl">
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2">
                 Language
