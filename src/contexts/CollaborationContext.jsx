@@ -24,7 +24,7 @@ const CollaborationContext = ({ children }) => {
   const [currentFileName, setCurrentFileName] = useState(null);
   const [isDefaultDoc, setIsDefaultDoc] = useState(true); // might remove this
   const { editor, setLanguage } = useCodeContext();
-  const { userData } = useAuthContext();
+  const { userData, session } = useAuthContext();
 
   const getLocalDoc = () => {
     const doc = localStorage.getItem("xeditor-default");
@@ -74,12 +74,12 @@ const CollaborationContext = ({ children }) => {
   }, [userData?.id, joined]);
 
   useEffect(() => {
-    if (!docId) return;
+    if (!docId || !session?.access_token) return;
     const provider = new HocuspocusProvider({
       url: `${SOCKET_URL}/collab/doc`,
       name: docId,
       document: new Y.Doc(),
-      token: "Bearer 1234abc",
+      token: "Bearer " + session.access_token,
     });
     console.log("PROVIDER SET :", provider);
     ydoc.current = provider.document;
@@ -90,7 +90,7 @@ const CollaborationContext = ({ children }) => {
       provider.destroy();
       provider.awareness.destroy();
     };
-  }, [docId]);
+  }, [docId, session?.access_token]);
 
   useEffect(() => {
     const fetchFileInfo = async () => {
@@ -167,7 +167,7 @@ const CollaborationContext = ({ children }) => {
     }
     const binding = new MonacoBinding(
       ydoc.current.getText(),
-      editor.getModel(),
+      editor?.getModel(),
       new Set([editor]),
       provider?.awareness
     );

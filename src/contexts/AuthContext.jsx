@@ -9,6 +9,7 @@ const Context = createContext(null);
 const AuthContext = ({ children }) => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isFirstSignIn, setIsFirstSignIn] = useState(false);
+  const [session, setSession] = useState(null);
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const prevData = useRef(null);
@@ -70,6 +71,7 @@ const AuthContext = ({ children }) => {
   useEffect(() => {
     const handleAuthStateChange = (event, session) => {
       console.log(event);
+      setSession(session);
 
       switch (event) {
         case "INITIAL_SESSION": {
@@ -118,7 +120,7 @@ const AuthContext = ({ children }) => {
   }, []);
 
   const value = {
-    supabase,
+    session,
     isSignedIn,
     isLoading,
     handleSignInWithGoogle,

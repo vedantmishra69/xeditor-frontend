@@ -25,7 +25,7 @@ const CodeEditorPage = () => {
   const [time, setTime] = useState("");
   const [memory, setMemory] = useState("");
   const [status, setStatus] = useState("");
-  const { language, setLanguage, sourceCode } = useCodeContext();
+  const { language, handleLanguageChange, sourceCode } = useCodeContext();
   const { setMessageList } = useChatContext();
   const { handleSignInWithGoogle, isSignedIn, userData } = useAuthContext();
   const { ydoc, docId, joined, setJoined, currentFileName, provider } =
@@ -81,18 +81,6 @@ const CodeEditorPage = () => {
     };
     signOut();
   };
-  const handleLanguage = (name) => {
-    const changeLanguage = async () => {
-      const { data, error } = await supabase
-        .from("doc_public_info")
-        .update({ language: name })
-        .eq("id", docId);
-      if (error) console.log("language update error: ", error);
-      else console.log("language updated ", data);
-    };
-    changeLanguage();
-    setLanguage(name);
-  };
 
   const handleSubmit = async () => {
     if (sourceCode && userData) {
@@ -100,7 +88,6 @@ const CodeEditorPage = () => {
       const data = await submitCode(language, sourceCode, input, userData);
       if (!data.error && data.token) {
         const result = await fetchResult(data.token);
-        console.log(data.token);
         if (result) {
           setOutput(
             `${result.stdout + "\n" && result.stdout}${
@@ -342,7 +329,7 @@ const CodeEditorPage = () => {
               </label>
               <select
                 value={language}
-                onChange={(e) => handleLanguage(e.target.value)}
+                onChange={(e) => handleLanguageChange(e.target.value, docId)}
                 className="w-full p-3 bg-white border border-gray-300 rounded-lg"
                 required
               >

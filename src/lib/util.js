@@ -6,6 +6,7 @@ import {
   animals,
 } from "unique-names-generator";
 import randomColor from "randomcolor";
+import supabase from "./supabase";
 
 export const submitCode = async (language, sourceCode, stdin, userData) => {
   const body = {
@@ -15,11 +16,22 @@ export const submitCode = async (language, sourceCode, stdin, userData) => {
     source_code: encodeUTF8ToBase64(sourceCode),
     stdin: encodeUTF8ToBase64(stdin),
   };
+  const {
+    data: {
+      session: { access_token },
+    },
+    error,
+  } = await supabase.auth.getSession();
+  if (error) {
+    console.log("Error getting access token in submitCode()");
+    return;
+  }
   try {
     const response = await fetch(`${API_URL}/code/submit`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + access_token,
       },
       body: JSON.stringify(body),
     });
@@ -46,7 +58,12 @@ export const fetchResult = async (token) => {
 
   while (true) {
     try {
-      const response = await fetch(`${API_URL}/code/result?token=${token}`);
+      const response = await fetch(`${API_URL}/code/result?token=${token}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const submission = await response.json();
       if (response.status !== 200) {
         console.error(submission);

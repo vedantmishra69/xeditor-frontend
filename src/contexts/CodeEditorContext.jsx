@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { DEFAULT_CODE, DEFAULT_LANGUAGE, THEME_LIST } from "../lib/constants";
 import { getThemeName } from "../lib/util";
 import { useAuthContext } from "./AuthContext";
+import supabase from "../lib/supabase";
 
 const Context = createContext();
 
@@ -15,6 +16,19 @@ export const CodeEditorContext = ({ children }) => {
   const { userData } = useAuthContext();
 
   const handleSetTheme = (theme) => monaco.editor.setTheme(getThemeName(theme));
+
+  const handleLanguageChange = (name, id) => {
+    const changeLanguage = async () => {
+      const { data, error } = await supabase
+        .from("doc_public_info")
+        .update({ language: name })
+        .eq("id", id);
+      if (error) console.log("language update error: ", error);
+      else console.log("language updated ", data);
+    };
+    changeLanguage();
+    setLanguage(name);
+  };
 
   useEffect(() => {
     if (!monaco || !userData) return;
@@ -33,6 +47,7 @@ export const CodeEditorContext = ({ children }) => {
     setSourceCode,
     language,
     setLanguage,
+    handleLanguageChange,
     editor,
     setEditor,
     monaco,
