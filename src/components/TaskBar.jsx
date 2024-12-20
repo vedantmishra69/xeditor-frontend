@@ -3,23 +3,22 @@ import TaskBarButton from "./TaskBarButton";
 import RunButton from "./RunButton";
 import DropDownMenuButton from "./DropDownMenuButton";
 import { LANGUAGE_MAPPING } from "../lib/constants";
-import { useState } from "react";
 import OpenFileDropDown from "./OpenFileDropDown";
+import { useCodeContext } from "../contexts/CodeEditorContext";
+import { useCollabContext } from "../contexts/CollaborationContext";
 
 const TaskBar = () => {
-  const [language, setLanguage] = useState("Python (3.8.1)");
-  const [currentFileName, setCurrentFileName] = useState("default");
+  const { language, handleLanguageChange } = useCodeContext();
+  const { docId } = useCollabContext();
 
-  const handeLanguageChange = (newVal) => {
-    setLanguage(newVal);
-  };
+  const changeLanguage = (newVal) => handleLanguageChange(newVal, docId);
 
   return (
     <div className="flex flex-row border-l-2 border-color2 cursor-pointer">
       <TaskBarButton text="New">
         <Plus size={21} />
       </TaskBarButton>
-      <OpenFileDropDown value={currentFileName} />
+      <OpenFileDropDown />
       <TaskBarButton text="Download">
         <Download size={21} />
       </TaskBarButton>
@@ -31,7 +30,7 @@ const TaskBar = () => {
       </TaskBarButton>
       <DropDownMenuButton
         value={language}
-        onChange={handeLanguageChange}
+        onChange={changeLanguage}
         options={Object.keys(LANGUAGE_MAPPING)}
       />
       <RunButton />

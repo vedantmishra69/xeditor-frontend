@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const DropDownMenuButton = ({ value, onChange, options }) => {
   const [isDropDown, setIsDropDown] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleDropDown = () => setIsDropDown(!isDropDown);
   const handleOption = (newValue) => {
@@ -20,8 +21,23 @@ const DropDownMenuButton = ({ value, onChange, options }) => {
     </div>
   ));
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropDown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
+      ref={dropdownRef}
       className={
         "w-56 relative flex flex-row items-center justify-between py-2 pl-4 pr-2 border-r-2 border-y-2 border-color2 text-xl" +
         (isDropDown ? "" : " hover:bg-color2 hover:text-color1")

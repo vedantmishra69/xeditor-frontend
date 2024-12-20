@@ -8,8 +8,8 @@ import { useCodeContext } from "./CodeEditorContext";
 import toast from "react-hot-toast";
 
 const Context = createContext();
-const connectionToastId = toast.loading("Connecting...");
-const editorToastId = toast.loading("Editor loading...");
+// const connectionToastId = toast.loading("Connecting...");
+// const editorToastId = toast.loading("Editor loading...");
 
 const StatesContext = ({ children }) => {
   const [userConnected, setUserConnected] = useState(false);
@@ -39,15 +39,15 @@ const StatesContext = ({ children }) => {
     if (editor && monaco) setEditorSetup(true);
   }, [editor, monaco]);
 
-  useEffect(() => {
-    if (docConnection && chatConnection && userConnected)
-      toast.success("Connected!", { id: connectionToastId, duration: 1000 });
-  }, [docConnection, chatConnection, userConnected]);
+  // useEffect(() => {
+  //   if (docConnection && chatConnection && userConnected)
+  //     toast.success("Connected!", { id: connectionToastId, duration: 1000 });
+  // }, [docConnection, chatConnection, userConnected]);
 
-  useEffect(() => {
-    if (editorSetup)
-      toast.success("Editor loaded", { id: editorToastId, duration: 1000 });
-  }, [editorSetup]);
+  // useEffect(() => {
+  //   if (editorSetup)
+  //     toast.success("Editor loaded", { id: editorToastId, duration: 1000 });
+  // }, [editorSetup]);
 
   const value = [userConnected, docConnection, editorSetup, chatConnection];
 

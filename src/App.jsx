@@ -2,7 +2,7 @@ import { Toaster } from "react-hot-toast";
 import "./App.css";
 import CodeEditorContext from "./contexts/CodeEditorContext";
 import CollaborationContext from "./contexts/CollaborationContext";
-import CodeEditorPage from "./pages/CodeEditorPage";
+import CodeEditorPage from "./pages/_CodeEditorPage";
 import AuthContext from "./contexts/AuthContext";
 import ChatContext from "./contexts/ChatContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
