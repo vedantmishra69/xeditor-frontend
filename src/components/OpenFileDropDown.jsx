@@ -98,7 +98,7 @@ const OpenFileDropDown = () => {
         {!obj.user_docs.is_default && (
           <div className="flex flex-row">
             <Edit3
-              className="text-slate-400"
+              className="text-slate-400 hover:text-color4"
               onClick={() => {
                 item.current = obj;
                 currentIndex.current = index;
@@ -106,7 +106,7 @@ const OpenFileDropDown = () => {
               }}
             />
             <Trash2
-              className="ml-2 text-slate-400"
+              className="ml-2 text-slate-400 hover:text-color4"
               onClick={() => {
                 item.current = obj;
                 currentIndex.current = index;
@@ -132,23 +132,24 @@ const OpenFileDropDown = () => {
         setUserFiles(data);
       }
     };
+    if (!isDropDown) return;
     if (!userData?.id) return;
     fetchFiles(userData.id);
-  }, [userData?.id]);
+  }, [userData?.id, isDropDown]);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropDown(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+  //       setIsDropDown(false);
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleClickOutside);
+  //   document.addEventListener("mousedown", handleClickOutside);
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
 
   return (
     <>

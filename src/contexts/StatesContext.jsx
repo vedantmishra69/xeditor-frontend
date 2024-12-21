@@ -16,6 +16,18 @@ const StatesContext = ({ children }) => {
   const [docConnection, setDocConnection] = useState(false);
   const [editorSetup, setEditorSetup] = useState(false);
   const [chatConnection, setChatConnection] = useState(false);
+
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [fileListOpen, setFileListOpen] = useState(false);
+  const [userListOpen, setUserListOpen] = useState(false);
+  const [newFileOpen, setNewFileOpen] = useState(false);
+  const [joinOpen, setJoinOpen] = useState(false);
+
+  const [clearInput, setClearInput] = useState(false);
+  const [clearOutput, setClearOutput] = useState(false);
+  const [clearChat, setClearChat] = useState(false);
+  const [clearCodeEditorPage, setClearCodeEditorPage] = useState(false);
+
   const { userData } = useAuthContext();
   const { isSubbed } = useChatContext();
   const { ydoc, docId, currentFileName, provider, awareness } =
@@ -49,7 +61,30 @@ const StatesContext = ({ children }) => {
   //     toast.success("Editor loaded", { id: editorToastId, duration: 1000 });
   // }, [editorSetup]);
 
-  const value = [userConnected, docConnection, editorSetup, chatConnection];
+  const value = {
+    userConnected,
+    docConnection,
+    editorSetup,
+    chatConnection,
+    settingsOpen,
+    setSettingsOpen,
+    userListOpen,
+    setUserListOpen,
+    newFileOpen,
+    setNewFileOpen,
+    joinOpen,
+    setJoinOpen,
+    clearInput,
+    setClearInput,
+    clearOutput,
+    setClearOutput,
+    clearChat,
+    setClearChat,
+    clearCodeEditorPage,
+    setClearCodeEditorPage,
+    fileListOpen,
+    setFileListOpen,
+  };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };

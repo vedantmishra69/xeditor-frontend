@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import { useState } from "react";
-import { DEFAULT_LANGUAGE } from "../lib/constants";
+import { DEFAULT_LANGUAGE, LANGUAGE_MAPPING } from "../lib/constants";
 import { X } from "lucide-react";
 import supabase from "../lib/supabase";
 import { useAuthContext } from "../contexts/AuthContext";
@@ -11,7 +11,7 @@ import { useCollabContext } from "../contexts/CollaborationContext";
 import toast from "react-hot-toast";
 import { useChatContext } from "../contexts/ChatContext";
 
-const NewFile = ({ close, languageOptions }) => {
+const NewFile = ({ close }) => {
   const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
   const [fileName, setFileName] = useState("");
   const { userData } = useAuthContext();
@@ -52,6 +52,12 @@ const NewFile = ({ close, languageOptions }) => {
       );
     }
   };
+
+  const languageOptions = Object.keys(LANGUAGE_MAPPING).map((name) => (
+    <option key={name} value={name}>
+      {name}
+    </option>
+  ));
 
   return (
     <div className="flex flex-col bg-white gap-4 p-4 rounded-lg">

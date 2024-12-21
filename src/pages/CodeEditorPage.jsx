@@ -169,10 +169,7 @@ const CodeEditorPage = () => {
       )}
       {newFileOpen && (
         <div className="fixed inset-0 z-10 flex justify-center items-center backdrop-brightness-50">
-          <NewFile
-            close={() => setNewFileOpen(false)}
-            languageOptions={languageOptions}
-          />
+          <NewFile close={() => setNewFileOpen(false)} />
         </div>
       )}
       {userListOpen && (
