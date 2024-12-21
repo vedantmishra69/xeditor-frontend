@@ -5,7 +5,6 @@ import {
   LucideUsers,
   Plus,
   Share2Icon,
-  User,
 } from "lucide-react";
 import TaskBarButton from "./TaskBarButton";
 import RunButton from "./RunButton";
@@ -17,11 +16,14 @@ import { copyToClipboard } from "../lib/util";
 import { toast } from "react-hot-toast";
 import { useStatesContext } from "../contexts/StatesContext";
 import UserTab from "./UserTab";
+import GoogleSignInButton from "./GoogleSignInButton";
+import { useAuthContext } from "../contexts/AuthContext";
 
 const TaskBar = () => {
   const { language, handleLanguageChange, sourceCode } = useCodeContext();
   const { docId, currentFileName, joined, setJoined } = useCollabContext();
   const { setNewFileOpen, setJoinOpen, setFileListOpen } = useStatesContext();
+  const { isSignedIn } = useAuthContext();
 
   const handleNew = () => setNewFileOpen(true);
 
@@ -89,7 +91,7 @@ const TaskBar = () => {
         options={Object.keys(LANGUAGE_MAPPING)}
       />
       <RunButton />
-      <UserTab />
+      {isSignedIn ? <UserTab /> : <GoogleSignInButton />}
     </div>
   );
 };
