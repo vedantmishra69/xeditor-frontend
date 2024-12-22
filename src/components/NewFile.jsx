@@ -57,26 +57,26 @@ const NewFile = ({ close }) => {
 
   return (
     <div className="flex flex-col gap-4 rounded-lg">
-      <div className="flex flex-row">
+      <div className="flex flex-row gap-4">
         <InputField
           value={fileName}
           onChange={(e) => setFileName(e.target.value)}
           placeholder="file name"
-          style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
         />
         <DropDownMenuButton
           value={language}
           onChange={setLanguage}
           options={Object.keys(LANGUAGE_MAPPING)}
-          style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
+          style={{
+            borderLeftColor: "#6272A4",
+            borderLeftWidth: "2px",
+            fontSize: "1.125rem",
+            lineHeight: "1.75rem",
+          }}
         />
       </div>
       <div className="flex flex-row justify-end">
-        <DefaultButton
-          onClick={handleCreateFile}
-          text="Create"
-          style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
-        />
+        <DefaultButton onClick={handleCreateFile} text="Create" />
       </div>
     </div>
   );

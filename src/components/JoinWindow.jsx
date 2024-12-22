@@ -88,29 +88,23 @@ const JoinWindow = ({ clearCodeEditorPage, close }) => {
   }, [userData?.id]);
 
   return (
-    <div className="flex flex-col bg-color1 gap-2 rounded-lg">
+    <div className="flex flex-col bg-color1 gap-4 rounded-lg">
       <form
         onSubmit={(e) => {
           e.preventDefault();
           handleTokenSubmit(joinToken);
         }}
       >
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-4">
           <InputField
             value={joinToken}
             onChange={handleJoinToken}
             placeholder="Enter invote token here..."
             style={{
-              "font-size": "1.125rem",
-              "line-height": "1.75rem",
               flex: "1 1 0%",
             }}
           />
-          <DefaultButton
-            text="Join"
-            type="submit"
-            style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
-          />
+          <DefaultButton text="Join" type="submit" />
         </div>
       </form>
       <div className="flex flex-col max-h-[50vh] overflow-y-auto pr-1">

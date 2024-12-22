@@ -1,23 +1,25 @@
-/* eslint-disable react/prop-types */
+import { useAuthContext } from "../contexts/AuthContext";
 import { useCollabContext } from "../contexts/CollaborationContext";
-import { X } from "lucide-react";
 
-const UserList = ({ close }) => {
+const UserList = () => {
   const { connectedUsers } = useCollabContext();
+  const { userData } = useAuthContext();
   const userList = [];
+  console.log(connectedUsers);
   for (const [key, item] of connectedUsers) {
-    console.log(item);
     userList.push(
-      <div key={key} className={"border-2 border-gray-100 p-2 rounded-lg"}>
-        <span style={{ color: item.color }}>{item.name}</span>
+      <div key={key} className={"p-2 flex flex-row justify-between"}>
+        <span style={{ color: item.color }} className="text-lg">
+          {item.name}
+        </span>
+        {userData?.id === item?.id && (
+          <span className="text-slate-400 text-lg">{"(You)"}</span>
+        )}
       </div>
     );
   }
   return (
-    <div className="flex flex-col bg-white p-2 rounded-lg gap-2">
-      <div className="justify-end flex">
-        <X size={20} onClick={close} />
-      </div>
+    <div className="flex flex-col bg-color1 rounded-lg max-h-[50vh] overflow-y-auto">
       {userList}
     </div>
   );

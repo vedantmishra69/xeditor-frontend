@@ -55,7 +55,7 @@ const DropDownMenuButton = ({ value, onChange, options, ...props }) => {
         <ChevronDown />
       </div>
       {isDropDown && (
-        <div className="max-h-60 bg-color1 text-start text-lg absolute top-14 -inset-x-10 flex flex-col border-2 border-color2 overflow-y-auto">
+        <div className="z-50 max-h-60 bg-color1 text-start text-lg absolute top-14 -inset-x-10 flex flex-col border-2 border-color2 overflow-y-auto">
           {optionList}
         </div>
       )}

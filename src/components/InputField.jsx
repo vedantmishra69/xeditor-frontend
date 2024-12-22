@@ -5,7 +5,7 @@ const InputField = ({ value, onChange, ...props }) => {
       type="text"
       value={value}
       onChange={onChange}
-      className="text-white bg-color1 border-2 border-color2 p-2 focus:outline-none focus:border-color4"
+      className="text-white text-lg bg-color1 border-2 border-color2 p-2 focus:outline-none focus:border-color4"
       {...props}
     />
   );

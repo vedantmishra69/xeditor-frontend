@@ -1,9 +1,11 @@
 import {
+  Dot,
   Download,
   FolderOpen,
   LogOut,
   LucideUsers,
   Plus,
+  Settings,
   Share2Icon,
 } from "lucide-react";
 import TaskBarButton from "./TaskBarButton";
@@ -21,8 +23,15 @@ import { useAuthContext } from "../contexts/AuthContext";
 
 const TaskBar = () => {
   const { language, handleLanguageChange, sourceCode } = useCodeContext();
-  const { docId, currentFileName, joined, setJoined } = useCollabContext();
-  const { setNewFileOpen, setJoinOpen, setFileListOpen } = useStatesContext();
+  const { docId, currentFileName, joined, setJoined, connectedUsersCount } =
+    useCollabContext();
+  const {
+    setNewFileOpen,
+    setJoinOpen,
+    setFileListOpen,
+    setSettingsOpen,
+    setUserListOpen,
+  } = useStatesContext();
   const { isSignedIn } = useAuthContext();
 
   const handleNew = () => setNewFileOpen(true);
@@ -35,6 +44,12 @@ const TaskBar = () => {
     setJoined(false);
     // setMessageList([]);
     toast.success("Room left successfully.");
+  };
+
+  const handleSettings = () => setSettingsOpen(true);
+
+  const handleConnectedUsers = () => {
+    if (connectedUsersCount) setUserListOpen(true);
   };
 
   const handleDownload = () => {
@@ -57,41 +72,51 @@ const TaskBar = () => {
 
   const changeLanguage = (newVal) => handleLanguageChange(newVal, docId);
 
-  const displayFileName =
-    currentFileName &&
-    language &&
-    currentFileName + LANGUAGE_MAPPING[language]?.extension;
-
   return (
     <div className="flex flex-row border-l-2 border-color2 cursor-pointer">
-      <TaskBarButton text="New" onClick={handleNew}>
-        <Plus size={21} />
-      </TaskBarButton>
-      <TaskBarButton text={displayFileName} onClick={handleOpen}>
-        <FolderOpen size={21} />
-      </TaskBarButton>
-      <TaskBarButton text="Download" onClick={handleDownload}>
-        <Download size={21} />
-      </TaskBarButton>
-      <TaskBarButton text="Invite" onClick={handleInvite}>
-        <Share2Icon size={21} />
-      </TaskBarButton>
-      {!joined ? (
-        <TaskBarButton text="Join" onClick={handleJoin}>
-          <LucideUsers size={21} />
+      <div className="flex flex-row flex-1">
+        <TaskBarButton text="New" onClick={handleNew}>
+          <Plus size={21} />
         </TaskBarButton>
-      ) : (
-        <TaskBarButton text="Leave" onClick={handleLeave}>
-          <LogOut size={21} />
+        <TaskBarButton text="Open" onClick={handleOpen}>
+          <FolderOpen size={21} />
         </TaskBarButton>
-      )}
-      <DropDownMenuButton
-        value={language}
-        onChange={changeLanguage}
-        options={Object.keys(LANGUAGE_MAPPING)}
-      />
-      <RunButton />
-      {isSignedIn ? <UserTab /> : <GoogleSignInButton />}
+        <DropDownMenuButton
+          value={language}
+          onChange={changeLanguage}
+          options={Object.keys(LANGUAGE_MAPPING)}
+          style={{ flex: "1 1 0%" }}
+        />
+        <RunButton />
+        <TaskBarButton text="Download" onClick={handleDownload}>
+          <Download size={21} />
+        </TaskBarButton>
+      </div>
+      <div className="flex flex-row flex-1">
+        <TaskBarButton text="Invite" onClick={handleInvite}>
+          <Share2Icon size={21} />
+        </TaskBarButton>
+        {!joined ? (
+          <TaskBarButton text="Join" onClick={handleJoin}>
+            <LucideUsers size={21} />
+          </TaskBarButton>
+        ) : (
+          <TaskBarButton text="Leave" onClick={handleLeave}>
+            <LogOut size={21} />
+          </TaskBarButton>
+        )}
+        <TaskBarButton
+          text={`${connectedUsersCount ? connectedUsersCount : 0} Connected`}
+          onClick={handleConnectedUsers}
+          style={{ flex: "1 1 0%" }}
+        >
+          <Dot color="#0DB91B" strokeWidth={"10px"} />
+        </TaskBarButton>
+        <TaskBarButton text="Settings" onClick={handleSettings}>
+          <Settings size={21} />
+        </TaskBarButton>
+        {isSignedIn ? <UserTab /> : <GoogleSignInButton />}
+      </div>
     </div>
   );
 };

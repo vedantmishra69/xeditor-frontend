@@ -57,6 +57,7 @@ const CodeEditorPage = () => {
   const handleInput = (e) => setInput(e.target.value);
 
   const handleSignIn = (response) => {
+    console.log(response);
     const deleteUser = async () => {
       const { data, error } = await supabase.rpc("delete_user", {
         user_id: userData?.id,

@@ -9,16 +9,8 @@ const DeleteConfirmation = ({ deleteFileName }) => {
           <p className="text-2xl">Are you sure?</p>
         </div>
         <div className="flex flex-row justify-evenly">
-          <DefaultButton
-            text="Yes"
-            onClick={() => deleteFileName(true)}
-            style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
-          />
-          <DefaultButton
-            text="No"
-            onClick={() => deleteFileName(false)}
-            style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
-          />
+          <DefaultButton text="Yes" onClick={() => deleteFileName(true)} />
+          <DefaultButton text="No" onClick={() => deleteFileName(false)} />
         </div>
       </div>
     </div>

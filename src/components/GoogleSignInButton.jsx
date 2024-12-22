@@ -1,4 +1,3 @@
-import { useGoogleLogin } from "@react-oauth/google";
 import { useCollabContext } from "../contexts/CollaborationContext";
 import { useAuthContext } from "../contexts/AuthContext";
 import supabase from "../lib/supabase";
@@ -7,14 +6,9 @@ import { Buffer } from "buffer";
 
 const GoogleSignInButton = () => {
   const { provider, ydoc } = useCollabContext();
-  const { userData, handleSignInWithGoogle } = useAuthContext();
+  const { userData } = useAuthContext();
 
-  const login = useGoogleLogin({
-    onSuccess: () => handleSignIn(),
-    onError: () => console.log("Login Failed"),
-  });
-
-  const handleSignIn = (response) => {
+  const handleSignIn = () => {
     const deleteUser = async () => {
       const { data, error } = await supabase.rpc("delete_user", {
         user_id: userData?.id,
@@ -28,13 +22,16 @@ const GoogleSignInButton = () => {
     );
     provider.destroy();
     deleteUser();
-    handleSignInWithGoogle(response);
+    // handleSignInWithGoogle(response);
+    supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
   };
 
   return (
     <button
-      onClick={() => login()}
-      className="flex items-center justify-center gap-2 px-4 py-2 border-2 border-color2 hover:bg-color2 hover:text-color1"
+      onClick={() => handleSignIn()}
+      className="flex items-center justify-center gap-2 px-4 py-2 border-y-2 border-r-2 border-color2 hover:bg-color2 hover:text-color1"
     >
       <img
         src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"

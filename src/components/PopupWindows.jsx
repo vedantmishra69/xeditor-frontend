@@ -47,7 +47,7 @@ const PopupWindows = () => {
               }}
             />
           </div>
-          <div className="p-2">
+          <div className="p-4">
             {settingsOpen && <Settings close={() => setSettingsOpen(false)} />}
             {userListOpen && <UserList close={() => setUserListOpen(false)} />}
             {fileListOpen && <OpenFile close={() => setFileListOpen(false)} />}

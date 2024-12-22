@@ -5,6 +5,10 @@ import { useAuthContext } from "../contexts/AuthContext";
 import { THEME_LIST } from "../lib/constants";
 import supabase from "../lib/supabase";
 import toast from "react-hot-toast";
+import InputField from "./InputField";
+import DropDownMenuButton from "./DropDownMenuButton";
+import DefaultButton from "./DefaultButton";
+import { Minus, Plus } from "lucide-react";
 
 const Settings = ({ close }) => {
   const [userSettings, setUserSettings] = useState(true);
@@ -15,6 +19,17 @@ const Settings = ({ close }) => {
   const [tabSize, setTabSize] = useState(userData.tab_size);
   const [fontSize, setFontSize] = useState(userData.font_size);
   const [wordWrap, setWordWrap] = useState(userData.word_wrap);
+  const { isSignedIn } = useAuthContext();
+
+  const handleSignOut = () => {
+    const signOut = async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) console.log("error signing out: ", error);
+      // else clearCodeEditorPage();
+    };
+    signOut();
+    close();
+  };
 
   const handleSave = async () => {
     const newData = {
@@ -36,6 +51,7 @@ const Settings = ({ close }) => {
       console.log(data);
       setUserData(data[0]);
       toast.success("Changes applied successfully");
+      close();
     }
   };
 
@@ -63,14 +79,12 @@ const Settings = ({ close }) => {
   }
 
   return (
-    <div className="w-96 h-[450px] bg-white flex flex-col rounded-lg">
-      <div className="flex flex-row m-2 gap-2">
+    <div className="w-96 h-[500px] bg-color1 flex flex-col rounded-lg">
+      <div className="flex flex-row mb-2 cursor-pointer">
         <div
           className={
-            "flex-1 flex justify-center text-xl p-2 rounded-lg font-semibold text-gray-600 " +
-            (userSettings
-              ? "bg-gray-300 border-gray-500 border-2"
-              : "bg-gray-100")
+            "flex-1 flex justify-center text-xl p-2 font-semibold border-2 border-color2 " +
+            (userSettings ? "bg-color2 text-color1" : "bg-color1")
           }
           onClick={() => setUserSettings(true)}
         >
@@ -78,10 +92,8 @@ const Settings = ({ close }) => {
         </div>
         <div
           className={
-            "flex-1 flex justify-center text-xl p-2 rounded-lg font-semibold text-gray-600 " +
-            (userSettings
-              ? "bg-gray-100"
-              : "bg-gray-300 border-gray-500 border-2")
+            "flex-1 flex justify-center text-xl p-2 font-semibold border-2 border-color2 " +
+            (userSettings ? "bg-color1" : "bg-color2 text-color1")
           }
           onClick={() => setUserSettings(false)}
         >
@@ -89,70 +101,78 @@ const Settings = ({ close }) => {
         </div>
       </div>
       {userSettings ? (
-        <div className="flex flex-col m-2 gap-2">
+        <div className="flex flex-col mb-2 gap-2">
           <div className="flex flex-col gap-1">
-            <div className="text-gray-500 font-normal">Name</div>
-            <input
-              placeholder={userData.name}
+            <div className="text-slate-400 font-normal">Name</div>
+            <InputField
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full p-2 border-2 border-gray-400 rounded-lg"
+              placeholder={userData?.name}
             />
           </div>
           <div className="flex flex-col gap-1">
-            <div className="text-gray-500 font-normal">Color</div>
+            <div className="text-slate-400 font-normal">Color</div>
             <HexColorPicker color={color} onChange={setColor} />
           </div>
         </div>
       ) : (
-        <div className="flex flex-col m-2 gap-2">
+        <div className="flex flex-col mb-2 gap-2">
           <div className="flex flex-col gap-1">
-            <div className="text-gray-500 font-normal">Theme</div>
+            <div className="text-slate-400 font-normal">Theme</div>
             <div>
-              <select
+              <DropDownMenuButton
                 value={theme}
-                onChange={(e) => setTheme(e.target.value)}
-                className="bg-white p-2 border-2 border-gray-200 rounded-lg w-1/2"
-              >
-                {themeOptions}
-              </select>
+                onChange={setTheme}
+                options={THEME_LIST.map((theme) => theme.replaceAll("-", " "))}
+                style={{
+                  borderLeftColor: "#6272A4",
+                  borderLeftWidth: "2px",
+                  fontSize: "1.125rem",
+                  lineHeight: "1.75rem",
+                }}
+              />
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <div className="text-gray-500 font-normal">Tab size</div>
-            <select
-              defaultValue={tabSize}
-              className="bg-white p-2 border-2 border-gray-200 rounded-lg w-1/2"
-            >
-              {tabOptions}
-            </select>
+            <div className="text-slate-400 font-normal">Tab size</div>
+            <DropDownMenuButton
+              value={tabSize}
+              onChange={setTabSize}
+              options={[2, 4, 8]}
+              style={{
+                borderLeftColor: "#6272A4",
+                borderLeftWidth: "2px",
+                fontSize: "1.125rem",
+                lineHeight: "1.75rem",
+              }}
+            />
           </div>
           <div className="flex flex-col gap-1">
-            <div className="text-gray-500 font-normal">Font size</div>
+            <div className="text-slate-400 font-normal">Font size</div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => {
                   if (fontSize > 10) setFontSize(fontSize - 1);
                 }}
-                className="text-xl font-bold bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-lg"
+                className="text-xl font-bold border-2 border-color2 bg-color1 hover:bg-color2 hover:text-color1 px-2 py-2"
               >
-                -
+                <Minus size={21} />
               </button>
-              <span className="font-medium text-center border-2 border-gray-200 px-2 py-1 rounded-lg">
+              <span className="text-lg text-center border-2 border-color2 bg-color1 px-2 py-1">
                 {fontSize}
               </span>
               <button
                 onClick={() => {
                   if (fontSize < 50) setFontSize(fontSize + 1);
                 }}
-                className="text-xl font-bold bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-lg"
+                className="text-xl font-bold border-2 border-color2 bg-color1 hover:bg-color2 hover:text-color1 px-2 py-2"
               >
-                +
+                <Plus size={21} />
               </button>
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <div className="text-gray-500 font-normal">Word wrap</div>
+            <div className="text-slate-400 font-normal">Word wrap</div>
             <div className="flex flex-row gap-2">
               <div className="flex flex-row gap-2">
                 <input
@@ -162,7 +182,7 @@ const Settings = ({ close }) => {
                   checked={wordWrap === true}
                   onChange={() => setWordWrap(true)}
                 />
-                <span>On</span>
+                <span className="text-lg">On</span>
               </div>
               <div className="flex flex-row gap-2">
                 <input
@@ -172,25 +192,17 @@ const Settings = ({ close }) => {
                   checked={wordWrap === false}
                   onChange={() => setWordWrap(false)}
                 />
-                <span>Off</span>
+                <span className="text-lg">Off</span>
               </div>
             </div>
           </div>
         </div>
       )}
-      <div className="flex flex-row justify-end gap-2 m-2 mt-auto">
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
-          onClick={handleSave}
-        >
-          Save
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
-          onClick={close}
-        >
-          Close
-        </button>
+      <div className="flex flex-row justify-between gap-2 mt-auto">
+        <DefaultButton text="Save" onClick={handleSave} />
+        {isSignedIn && (
+          <DefaultButton text="Sign Out" onClick={handleSignOut} />
+        )}
       </div>
     </div>
   );

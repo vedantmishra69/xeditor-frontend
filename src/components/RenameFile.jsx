@@ -31,14 +31,9 @@ const RenameFile = ({ item, updateName }) => {
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           placeholder="Enter name..."
-          style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
         />
         <div className="flex flex-row justify-end">
-          <DefaultButton
-            text="Save"
-            type="submit"
-            style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
-          />
+          <DefaultButton text="Save" type="submit" />
         </div>
       </div>
     </form>
