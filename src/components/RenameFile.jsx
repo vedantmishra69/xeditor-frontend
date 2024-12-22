@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import supabase from "../lib/supabase";
-import { X } from "lucide-react";
+import InputField from "./InputField";
+import DefaultButton from "./DefaultButton";
 
-const RenameFile = ({ item, close, updateName }) => {
+const RenameFile = ({ item, updateName }) => {
   const [newName, setNewName] = useState(item.name);
 
   const handleSubmit = (e) => {
@@ -25,24 +26,19 @@ const RenameFile = ({ item, close, updateName }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex flex-col gap-2 p-2 bg-white rounded-lg">
-        <div className="justify-end flex">
-          <X size={20} onClick={close} />
-        </div>
-        <input
-          type="text"
+      <div className="flex flex-col gap-4 bg-color1">
+        <InputField
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           placeholder="Enter name..."
-          className=" bg-white border border-gray-300 rounded-lg p-2 w-[20vw]"
+          style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
         />
         <div className="flex flex-row justify-end">
-          <button
+          <DefaultButton
+            text="Save"
             type="submit"
-            className=" bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
-          >
-            Save
-          </button>
+            style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
+          />
         </div>
       </div>
     </form>

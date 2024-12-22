@@ -2,7 +2,7 @@
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-const DropDownMenuButton = ({ value, onChange, options }) => {
+const DropDownMenuButton = ({ value, onChange, options, ...props }) => {
   const [isDropDown, setIsDropDown] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -43,6 +43,7 @@ const DropDownMenuButton = ({ value, onChange, options }) => {
         (isDropDown ? "" : " hover:bg-color2 hover:text-color1")
       }
       onClick={handleDropDown}
+      {...props}
     >
       <div className="truncate">{value}</div>
       <div
@@ -54,7 +55,7 @@ const DropDownMenuButton = ({ value, onChange, options }) => {
         <ChevronDown />
       </div>
       {isDropDown && (
-        <div className="max-h-60 text-start text-lg absolute top-14 -inset-x-10 flex flex-col border-2 border-color2 overflow-scroll">
+        <div className="max-h-60 bg-color1 text-start text-lg absolute top-14 -inset-x-10 flex flex-col border-2 border-color2 overflow-y-auto">
           {optionList}
         </div>
       )}

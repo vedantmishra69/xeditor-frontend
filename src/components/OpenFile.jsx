@@ -1,12 +1,13 @@
 /* eslint-disable react/prop-types */
 import { useCollabContext } from "../contexts/CollaborationContext";
-import { X, Trash2, Edit3 } from "lucide-react";
+import { Trash2, Edit3 } from "lucide-react";
 import supabase from "../lib/supabase";
 import toast from "react-hot-toast";
 import { useState, useEffect, useRef } from "react";
 import { useAuthContext } from "../contexts/AuthContext";
 import RenameFile from "./RenameFile";
 import DeleteConfirmation from "./DeleteConfirmation";
+import PopupBox from "./PopupBox";
 
 const OpenFile = ({ close }) => {
   const [userFiles, setUserFiles] = useState(null);
@@ -70,7 +71,7 @@ const OpenFile = ({ close }) => {
     return (
       <div
         key={index}
-        className="flex flex-row w-[20vw] p-4 hover:bg-gray-100 rounded-lg justify-between"
+        className="flex flex-row p-2 border-2 border-color1 hover:border-color2 cursor-pointer justify-between"
       >
         <div
           className="flex-1"
@@ -85,7 +86,7 @@ const OpenFile = ({ close }) => {
         {!obj.user_docs.is_default && (
           <div className="flex flex-row">
             <Edit3
-              color="#cccaca"
+              className="text-slate-400 hover:text-color4"
               onClick={() => {
                 item.current = obj;
                 currentIndex.current = index;
@@ -93,8 +94,7 @@ const OpenFile = ({ close }) => {
               }}
             />
             <Trash2
-              className="ml-2"
-              color="#cccaca"
+              className="text-slate-400 hover:text-color4 ml-2"
               onClick={() => {
                 item.current = obj;
                 currentIndex.current = index;
@@ -128,25 +128,26 @@ const OpenFile = ({ close }) => {
     <>
       {renameFileOpen && (
         <div className="fixed inset-0 z-10 flex justify-center items-center backdrop-brightness-50">
-          <RenameFile
-            item={item.current}
-            updateName={updateName}
-            close={() => setRenameFileOpen(false)}
-          />
+          <PopupBox name="Rename File" close={() => setRenameFileOpen(false)}>
+            <RenameFile
+              item={item.current}
+              updateName={updateName}
+              close={() => setRenameFileOpen(false)}
+            />
+          </PopupBox>
         </div>
       )}
       {deleteFileOpen && (
         <div className="fixed inset-0 z-10 flex justify-center items-center backdrop-brightness-50">
-          <DeleteConfirmation
-            deleteFileName={deleteFileName}
-            close={() => setDeleteFileOpen(false)}
-          />
+          <PopupBox name="Delete File" close={() => setDeleteFileOpen(false)}>
+            <DeleteConfirmation
+              deleteFileName={deleteFileName}
+              close={() => setDeleteFileOpen(false)}
+            />
+          </PopupBox>
         </div>
       )}
-      <div className="flex flex-col bg-white p-4 rounded-lg gap-1">
-        <div className="justify-end flex">
-          <X size={20} onClick={close} />
-        </div>
+      <div className="flex flex-col text-lg px-1 bg-color1 max-h-[50vh] overflow-y-auto">
         {userFilesList}
       </div>
     </>

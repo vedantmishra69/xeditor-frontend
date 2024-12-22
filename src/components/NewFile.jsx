@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { DEFAULT_LANGUAGE, LANGUAGE_MAPPING } from "../lib/constants";
-import { X } from "lucide-react";
 import supabase from "../lib/supabase";
 import { useAuthContext } from "../contexts/AuthContext";
 import { Buffer } from "buffer";
@@ -10,6 +9,9 @@ import * as Y from "yjs";
 import { useCollabContext } from "../contexts/CollaborationContext";
 import toast from "react-hot-toast";
 import { useChatContext } from "../contexts/ChatContext";
+import InputField from "./InputField";
+import DropDownMenuButton from "./DropDownMenuButton";
+import DefaultButton from "./DefaultButton";
 
 const NewFile = ({ close }) => {
   const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
@@ -53,40 +55,28 @@ const NewFile = ({ close }) => {
     }
   };
 
-  const languageOptions = Object.keys(LANGUAGE_MAPPING).map((name) => (
-    <option key={name} value={name}>
-      {name}
-    </option>
-  ));
-
   return (
-    <div className="flex flex-col bg-white gap-4 p-4 rounded-lg">
-      <div className="justify-end flex">
-        <X size={20} onClick={close} />
-      </div>
-      <div className="flex flex-row gap-4">
-        <input
+    <div className="flex flex-col gap-4 rounded-lg">
+      <div className="flex flex-row">
+        <InputField
           value={fileName}
           onChange={(e) => setFileName(e.target.value)}
           placeholder="file name"
-          className="flex-1 w-[25vw] bg-white border border-gray-300 rounded-lg p-2"
+          style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
         />
-        <select
+        <DropDownMenuButton
           value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          className="flex p-3 bg-white border border-gray-300 rounded-lg"
-          required
-        >
-          {languageOptions}
-        </select>
+          onChange={setLanguage}
+          options={Object.keys(LANGUAGE_MAPPING)}
+          style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
+        />
       </div>
       <div className="flex flex-row justify-end">
-        <button
+        <DefaultButton
           onClick={handleCreateFile}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
-        >
-          Create
-        </button>
+          text="Create"
+          style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
+        />
       </div>
     </div>
   );

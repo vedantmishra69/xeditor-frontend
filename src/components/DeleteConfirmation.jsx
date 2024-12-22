@@ -1,29 +1,24 @@
 /* eslint-disable react/prop-types */
-import { X } from "lucide-react";
+import DefaultButton from "./DefaultButton";
 
-const DeleteConfirmation = ({ close, deleteFileName }) => {
+const DeleteConfirmation = ({ deleteFileName }) => {
   return (
-    <div className="flex flex-col bg-white gap-2 p-2 w-[30vw] rounded-lg">
-      <div className="justify-end flex">
-        <X size={20} onClick={close} />
-      </div>
+    <div className="flex flex-col bg-color1 gap-2">
       <div className="flex flex-col gap-10">
         <div className="flex flex-row justify-center">
-          <p>Are you sure?</p>
+          <p className="text-2xl">Are you sure?</p>
         </div>
         <div className="flex flex-row justify-evenly">
-          <button
-            className=" bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
+          <DefaultButton
+            text="Yes"
             onClick={() => deleteFileName(true)}
-          >
-            Yes
-          </button>
-          <button
-            className=" bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
+            style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
+          />
+          <DefaultButton
+            text="No"
             onClick={() => deleteFileName(false)}
-          >
-            No
-          </button>
+            style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
+          />
         </div>
       </div>
     </div>

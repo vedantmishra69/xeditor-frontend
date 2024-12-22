@@ -5,7 +5,8 @@ import { useAuthContext } from "../contexts/AuthContext";
 import { useCollabContext } from "../contexts/CollaborationContext";
 import toast from "react-hot-toast";
 import { LANGUAGE_MAPPING } from "../lib/constants";
-import { X } from "lucide-react";
+import InputField from "./InputField";
+import DefaultButton from "./DefaultButton";
 
 const JoinWindow = ({ clearCodeEditorPage, close }) => {
   const [joinToken, setJoinToken] = useState("");
@@ -16,13 +17,13 @@ const JoinWindow = ({ clearCodeEditorPage, close }) => {
   const joinHistoryList = joinHistory?.map((item, index) => (
     <div
       key={index}
-      className="flex flex-row justify-between p-2 hover:bg-gray-100 rounded-lg"
+      className="flex flex-row justify-between p-2 border-2 border-color1 hover:border-color2"
       onClick={() => handleTokenSubmit(item.doc_id)}
     >
-      <div className="text-gray-900">{`${item.doc_public_info.name}${
+      <div className="">{`${item.doc_public_info.name}${
         LANGUAGE_MAPPING[item.doc_public_info.language].extension
       }`}</div>
-      <div className="text-gray-300">{`${item.user_public_info.name}`}</div>
+      <div className="text-slate-400">{`${item.user_public_info.name}`}</div>
     </div>
   ));
 
@@ -60,13 +61,15 @@ const JoinWindow = ({ clearCodeEditorPage, close }) => {
         clearCodeEditorPage();
         close();
         toast.success("Room joined successfully.");
-      } else console.log("document don't exist: ", joinToken, error);
+      } else {
+        toast.error("Invalid join token.");
+        console.log("document don't exist: ", joinToken, error);
+      }
     };
     if (!doc_id) return;
     checkIfExist();
   };
 
-  // TODO: fetch owner's name for the doc id
   useEffect(() => {
     const fetchHistory = async () => {
       const { data, error } = await supabase
@@ -85,10 +88,7 @@ const JoinWindow = ({ clearCodeEditorPage, close }) => {
   }, [userData?.id]);
 
   return (
-    <div className="flex flex-col bg-white gap-2 p-2 rounded-lg">
-      <div className="justify-end flex">
-        <X size={20} onClick={close} />
-      </div>
+    <div className="flex flex-col bg-color1 gap-2 rounded-lg">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -96,22 +96,26 @@ const JoinWindow = ({ clearCodeEditorPage, close }) => {
         }}
       >
         <div className="flex flex-row gap-2">
-          <input
-            type="text"
+          <InputField
             value={joinToken}
             onChange={handleJoinToken}
-            placeholder="Enter invite token here..."
-            className="flex-1 bg-white border border-gray-300 rounded-lg p-2 w-1/2"
+            placeholder="Enter invote token here..."
+            style={{
+              "font-size": "1.125rem",
+              "line-height": "1.75rem",
+              flex: "1 1 0%",
+            }}
           />
-          <button
+          <DefaultButton
+            text="Join"
             type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
-          >
-            Join
-          </button>
+            style={{ "font-size": "1.125rem", "line-height": "1.75rem" }}
+          />
         </div>
       </form>
-      <div className="flex flex-col gap-1">{joinHistoryList}</div>
+      <div className="flex flex-col max-h-[50vh] overflow-y-auto pr-1">
+        {joinHistoryList}
+      </div>
     </div>
   );
 };
