@@ -1,16 +1,14 @@
-/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useChatContext } from "../contexts/ChatContext";
-import { useCollabContext } from "../contexts/CollaborationContext";
-import { User } from "lucide-react";
-import { ChevronDown } from "lucide-react";
+import InputField from "./InputField";
+import DefaultButton from "./DefaultButton";
+import { Trash2 } from "lucide-react";
 
-const ChatWindow = ({ open }) => {
+const ChatWindow = () => {
   const { messageList, channel, isSubbed } = useChatContext();
   const [input, setInput] = useState("");
   const { userData } = useAuthContext();
-  const { connectedUsersCount } = useCollabContext();
 
   const messageBoxList = messageList?.map((item, index) => (
     <div key={index} className="w-full my-1">
@@ -38,39 +36,25 @@ const ChatWindow = ({ open }) => {
   };
 
   return (
-    <div className="flex flex-col w-full h-[40vh]">
-      {connectedUsersCount ? (
-        <div className="flex flex-row justify-end">
-          <div
-            className="flex flex-row items-center bg-white px-2 py-1 rounded-md hover:bg-gray-200"
-            onClick={open}
-          >
-            <span className="text-lg mr-1">{connectedUsersCount}</span>
-            <User size={17} />
-            <ChevronDown size={13} />
-          </div>
-        </div>
-      ) : null}
-      <div className="flex-1 flex flex-col overflow-y-auto">
+    <div className="flex flex-col w-full h-full">
+      <div className="flex flex-row relative justify-center py-1 border-b-2 border-color2 text-lg">
+        <span>Chat</span>
+        <Trash2 className="absolute right-2 text-slate-400 hover:text-color4" />
+      </div>
+      <div className="flex-1 flex flex-col overflow-y-auto p-2 ">
         {messageBoxList}
       </div>
       <form
         onSubmit={handleSend}
-        className="mt-auto flex flex-row w-full gap-2"
+        className="mt-auto flex flex-row w-full gap-2 p-2"
       >
-        <input
-          className="flex-1 bg-white border border-gray-300 rounded-lg p-2"
-          placeholder="Enter message here..."
-          type="text"
+        <InputField
           value={input}
           onChange={handleInput}
+          placeholder="Enter message here..."
+          style={{ flex: "1 1 0%" }}
         />
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg"
-        >
-          Send
-        </button>
+        <DefaultButton type="submit" text="Send" style={{ flex: "0 0 auto" }} />
       </form>
     </div>
   );

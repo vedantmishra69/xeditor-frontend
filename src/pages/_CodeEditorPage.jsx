@@ -1,5 +1,7 @@
+import ChatWindow from "../components/ChatWindow";
 import CodeEditor from "../components/CodeEditor";
 import InputBox from "../components/InputBox";
+import OutputBox from "../components/OutputBox";
 import PopupWindows from "../components/PopupWindows";
 import TaskBar from "../components/TaskBar";
 import { useCodeContext } from "../contexts/CodeEditorContext";
@@ -28,13 +30,17 @@ const CodeEditorPage = () => {
           </div>
         </div>
         <div className="flex-1 flex flex-col border-r-2 border-b-2 border-color2 overflow-hidden">
-          <div className="flex-1 flex flex-row border-b-2 border-color2">
-            <div>
+          <div className="h-1/2 flex flex-row border-b-2 border-color2">
+            <div className="w-1/2">
               <InputBox />
             </div>
-            <div></div>
+            <div className="w-1/2">
+              <OutputBox />
+            </div>
           </div>
-          <div className="flex-1"></div>
+          <div className="h-1/2">
+            <ChatWindow />
+          </div>
         </div>
       </div>
     </div>
