@@ -9,6 +9,7 @@ import InputField from "./InputField";
 import DropDownMenuButton from "./DropDownMenuButton";
 import DefaultButton from "./DefaultButton";
 import { Minus, Plus } from "lucide-react";
+import { useStatesContext } from "../contexts/StatesContext";
 
 const Settings = ({ close }) => {
   const [userSettings, setUserSettings] = useState(true);
@@ -20,12 +21,13 @@ const Settings = ({ close }) => {
   const [fontSize, setFontSize] = useState(userData.font_size);
   const [wordWrap, setWordWrap] = useState(userData.word_wrap);
   const { isSignedIn } = useAuthContext();
+  const { clearCodeEditorPage } = useStatesContext();
 
   const handleSignOut = () => {
     const signOut = async () => {
       const { error } = await supabase.auth.signOut();
       if (error) console.log("error signing out: ", error);
-      // else clearCodeEditorPage();
+      else clearCodeEditorPage();
     };
     signOut();
     close();

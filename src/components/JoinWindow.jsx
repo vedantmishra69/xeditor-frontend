@@ -7,12 +7,14 @@ import toast from "react-hot-toast";
 import { LANGUAGE_MAPPING } from "../lib/constants";
 import InputField from "./InputField";
 import DefaultButton from "./DefaultButton";
+import { useStatesContext } from "../contexts/StatesContext";
 
-const JoinWindow = ({ clearCodeEditorPage, close }) => {
+const JoinWindow = ({ close }) => {
   const [joinToken, setJoinToken] = useState("");
   const [joinHistory, setJoinHistory] = useState([]);
   const { setDocId, setJoined } = useCollabContext();
   const { userData } = useAuthContext();
+  const { clearCodeEditorPage } = useStatesContext();
 
   const joinHistoryList = joinHistory?.map((item, index) => (
     <div

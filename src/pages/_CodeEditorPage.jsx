@@ -9,12 +9,22 @@ import { useCollabContext } from "../contexts/CollaborationContext";
 import { LANGUAGE_MAPPING } from "../lib/constants";
 
 const CodeEditorPage = () => {
-  const { language } = useCodeContext();
+  const { language, input, setInput, output, setOutput } = useCodeContext();
   const { currentFileName } = useCollabContext();
+
   const displayFileName =
     currentFileName &&
     language &&
     currentFileName + LANGUAGE_MAPPING[language]?.extension;
+
+  const languageOptions = [];
+  for (const name in LANGUAGE_MAPPING) {
+    languageOptions.push(
+      <option key={name} value={name}>
+        {name}
+      </option>
+    );
+  }
 
   return (
     <div className="h-screen w-full bg-color1 flex flex-col text-color5 overflow-hidden">
@@ -32,10 +42,10 @@ const CodeEditorPage = () => {
         <div className="flex-1 flex flex-col border-r-2 border-b-2 border-color2 overflow-hidden">
           <div className="h-1/2 flex flex-row border-b-2 border-color2">
             <div className="w-1/2">
-              <InputBox />
+              <InputBox value={input} onChange={setInput} />
             </div>
             <div className="w-1/2">
-              <OutputBox />
+              <OutputBox value={output} onChange={setOutput} />
             </div>
           </div>
           <div className="h-1/2">

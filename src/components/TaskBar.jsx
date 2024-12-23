@@ -22,7 +22,8 @@ import GoogleSignInButton from "./GoogleSignInButton";
 import { useAuthContext } from "../contexts/AuthContext";
 
 const TaskBar = () => {
-  const { language, handleLanguageChange, sourceCode } = useCodeContext();
+  const { language, handleLanguageChange, sourceCode, handleSubmit } =
+    useCodeContext();
   const { docId, currentFileName, joined, setJoined, connectedUsersCount } =
     useCollabContext();
   const {
@@ -31,18 +32,31 @@ const TaskBar = () => {
     setFileListOpen,
     setSettingsOpen,
     setUserListOpen,
+    clearCodeEditorPage,
   } = useStatesContext();
   const { isSignedIn } = useAuthContext();
 
-  const handleNew = () => setNewFileOpen(true);
+  const handleNew = () => {
+    if (!isSignedIn)
+      toast.success(
+        "Sign in to create multiple files and access it across devices."
+      );
+    else setNewFileOpen(true);
+  };
 
-  const handleOpen = () => setFileListOpen(true);
+  const handleOpen = () => {
+    if (!isSignedIn)
+      toast.success(
+        "Sign in to create multiple files and access it across devices."
+      );
+    else setFileListOpen(true);
+  };
 
   const handleJoin = () => setJoinOpen(true);
 
   const handleLeave = () => {
     setJoined(false);
-    // setMessageList([]);
+    clearCodeEditorPage();
     toast.success("Room left successfully.");
   };
 
@@ -70,6 +84,10 @@ const TaskBar = () => {
     toast.success(response.message);
   };
 
+  const handleRun = () => {
+    handleSubmit();
+  };
+
   const changeLanguage = (newVal) => handleLanguageChange(newVal, docId);
 
   return (
@@ -87,7 +105,7 @@ const TaskBar = () => {
           options={Object.keys(LANGUAGE_MAPPING)}
           style={{ flex: "1 1 0%" }}
         />
-        <RunButton />
+        <RunButton onClick={handleRun} />
         <TaskBarButton text="Download" onClick={handleDownload}>
           <Download size={21} />
         </TaskBarButton>

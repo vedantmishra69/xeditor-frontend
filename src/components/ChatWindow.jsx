@@ -6,7 +6,7 @@ import DefaultButton from "./DefaultButton";
 import { Trash2 } from "lucide-react";
 
 const ChatWindow = () => {
-  const { messageList, channel, isSubbed } = useChatContext();
+  const { messageList, setMessageList, channel, isSubbed } = useChatContext();
   const [input, setInput] = useState("");
   const { userData } = useAuthContext();
 
@@ -16,6 +16,8 @@ const ChatWindow = () => {
       {`: ${item.message}`}
     </div>
   ));
+
+  const clear = () => setMessageList([]);
 
   const handleInput = (e) => setInput(e.target.value);
 
@@ -39,7 +41,10 @@ const ChatWindow = () => {
     <div className="flex flex-col w-full h-full">
       <div className="flex flex-row relative justify-center py-1 border-b-2 border-color2 text-lg">
         <span>Chat</span>
-        <Trash2 className="absolute right-2 text-slate-400 hover:text-color4" />
+        <Trash2
+          className="absolute right-2 text-slate-400 hover:text-color4"
+          onClick={clear}
+        />
       </div>
       <div className="flex-1 flex flex-col overflow-y-auto p-2 ">
         {messageBoxList}

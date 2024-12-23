@@ -17,7 +17,8 @@ const InputBox = ({ value, onChange }) => {
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full h-full p-2 text-base bg-color1 text-color5 resize-none focus:outline-none"
+        spellCheck={false}
+        className="w-full h-full p-2 text-base bg-color1 text-color5 resize-none focus:outline-none font-mono"
       />
     </div>
   );

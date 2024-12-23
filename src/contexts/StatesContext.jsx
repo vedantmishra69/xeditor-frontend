@@ -8,8 +8,8 @@ import { useCodeContext } from "./CodeEditorContext";
 import toast from "react-hot-toast";
 
 const Context = createContext();
-// const connectionToastId = toast.loading("Connecting...");
-// const editorToastId = toast.loading("Editor loading...");
+const connectionToastId = toast.loading("Connecting...");
+const editorToastId = toast.loading("Editor loading...");
 
 const StatesContext = ({ children }) => {
   const [userConnected, setUserConnected] = useState(false);
@@ -23,16 +23,21 @@ const StatesContext = ({ children }) => {
   const [newFileOpen, setNewFileOpen] = useState(false);
   const [joinOpen, setJoinOpen] = useState(false);
 
-  const [clearInput, setClearInput] = useState(false);
-  const [clearOutput, setClearOutput] = useState(false);
-  const [clearChat, setClearChat] = useState(false);
-  const [clearCodeEditorPage, setClearCodeEditorPage] = useState(false);
-
   const { userData } = useAuthContext();
-  const { isSubbed } = useChatContext();
+  const { isSubbed, setMessageList } = useChatContext();
   const { ydoc, docId, currentFileName, provider, awareness } =
     useCollabContext();
-  const { editor, monaco } = useCodeContext();
+  const { editor, monaco, setInput, setOutput } = useCodeContext();
+
+  const clearCodeEditorPage = () => {
+    setInput("");
+    setOutput("");
+    setMessageList([]);
+  };
+
+  const clearChat = () => setMessageList([]);
+  const clearInput = () => setInput("");
+  const clearOutput = () => setOutput("");
 
   useEffect(() => {
     if (ydoc && docId && provider && awareness && currentFileName)
@@ -51,15 +56,15 @@ const StatesContext = ({ children }) => {
     if (editor && monaco) setEditorSetup(true);
   }, [editor, monaco]);
 
-  // useEffect(() => {
-  //   if (docConnection && chatConnection && userConnected)
-  //     toast.success("Connected!", { id: connectionToastId, duration: 1000 });
-  // }, [docConnection, chatConnection, userConnected]);
+  useEffect(() => {
+    if (docConnection && chatConnection && userConnected)
+      toast.success("Connected!", { id: connectionToastId, duration: 1000 });
+  }, [docConnection, chatConnection, userConnected]);
 
-  // useEffect(() => {
-  //   if (editorSetup)
-  //     toast.success("Editor loaded", { id: editorToastId, duration: 1000 });
-  // }, [editorSetup]);
+  useEffect(() => {
+    if (editorSetup)
+      toast.success("Editor loaded", { id: editorToastId, duration: 1000 });
+  }, [editorSetup]);
 
   const value = {
     userConnected,
@@ -75,13 +80,9 @@ const StatesContext = ({ children }) => {
     joinOpen,
     setJoinOpen,
     clearInput,
-    setClearInput,
     clearOutput,
-    setClearOutput,
     clearChat,
-    setClearChat,
     clearCodeEditorPage,
-    setClearCodeEditorPage,
     fileListOpen,
     setFileListOpen,
   };
