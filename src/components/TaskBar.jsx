@@ -92,7 +92,7 @@ const TaskBar = () => {
 
   return (
     <div className="flex flex-row border-l-2 border-color2 cursor-pointer">
-      <div className="flex flex-row flex-1">
+      <div className="flex flex-row w-1/2">
         <TaskBarButton text="New" onClick={handleNew}>
           <Plus size={21} />
         </TaskBarButton>
@@ -110,7 +110,7 @@ const TaskBar = () => {
           <Download size={21} />
         </TaskBarButton>
       </div>
-      <div className="flex flex-row flex-1">
+      <div className="flex flex-row w-1/2">
         <TaskBarButton text="Invite" onClick={handleInvite}>
           <Share2Icon size={21} />
         </TaskBarButton>
@@ -124,7 +124,7 @@ const TaskBar = () => {
           </TaskBarButton>
         )}
         <TaskBarButton
-          text={`${connectedUsersCount ? connectedUsersCount : 0} Connected`}
+          text={`${connectedUsersCount ? connectedUsersCount : 0} Online`}
           onClick={handleConnectedUsers}
           style={{ flex: "1 1 0%" }}
         >

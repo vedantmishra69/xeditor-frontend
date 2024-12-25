@@ -26,6 +26,8 @@ const UserTab = ({ ...props }) => {
             src={session?.user?.user_metadata?.avatar_url}
             alt="User"
             className="object-cover"
+            crossOrigin="anonymous"
+            referrerPolicy="no-referrer"
           />
         </div>
       )}
