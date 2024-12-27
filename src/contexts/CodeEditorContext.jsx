@@ -18,7 +18,6 @@ export const CodeEditorContext = ({ children }) => {
   const [output, setOutput] = useState("");
   const [sourceCode, setSourceCode] = useState(DEFAULT_CODE);
   const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
-  const [themeLoaded, setThemeLoaded] = useState(false);
   const [editor, setEditor] = useState(null);
   const [monaco, setMonaco] = useState(null);
   const { userData } = useAuthContext();
@@ -81,15 +80,19 @@ export const CodeEditorContext = ({ children }) => {
         const data = await import(`../lib/themes/${THEME_LIST[theme]}.json`);
         monaco.editor.defineTheme(getThemeName(THEME_LIST[theme]), data);
       }
-      setThemeLoaded(true);
     };
     defineThemes();
   }, [monaco]);
 
   useEffect(() => {
-    if (!monaco || !userData?.theme || !themeLoaded) return;
-    monaco.editor.setTheme(getThemeName(userData?.theme));
-  }, [monaco, userData?.theme, themeLoaded]);
+    if (!monaco || !userData?.theme) return;
+    const setUserTheme = async () => {
+      const data = await import(`../lib/themes/${userData.theme}.json`);
+      monaco.editor.defineTheme(getThemeName(userData.theme), data);
+      monaco.editor.setTheme(getThemeName(userData.theme));
+    };
+    setUserTheme();
+  }, [monaco, userData?.theme]);
 
   const value = {
     sourceCode,
