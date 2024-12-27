@@ -61,17 +61,33 @@ export const CodeEditorContext = ({ children }) => {
     }
   };
 
+  // useEffect(() => {
+  //   if (!monaco || !userData) return;
+  //   const defineThemes = async () => {
+  //     for (const theme in THEME_LIST) {
+  //       const data = await import(`../lib/themes/${THEME_LIST[theme]}.json`);
+  //       monaco.editor.defineTheme(getThemeName(THEME_LIST[theme]), data);
+  //     }
+  //     monaco.editor.setTheme(getThemeName(userData.theme));
+  //   };
+  //   defineThemes();
+  // }, [monaco, userData]);
+
   useEffect(() => {
-    if (!monaco || !userData) return;
+    if (!monaco) return;
     const defineThemes = async () => {
       for (const theme in THEME_LIST) {
         const data = await import(`../lib/themes/${THEME_LIST[theme]}.json`);
         monaco.editor.defineTheme(getThemeName(THEME_LIST[theme]), data);
       }
-      monaco.editor.setTheme(getThemeName(userData.theme));
     };
     defineThemes();
-  }, [monaco, userData]);
+  }, [monaco]);
+
+  useEffect(() => {
+    if (!monaco || !userData?.theme) return;
+    monaco.editor.setTheme(getThemeName(userData?.theme));
+  }, [monaco, userData?.theme]);
 
   const value = {
     sourceCode,
