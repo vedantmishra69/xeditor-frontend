@@ -15,6 +15,7 @@ const JoinWindow = ({ close }) => {
   const { setDocId, setJoined } = useCollabContext();
   const { userData } = useAuthContext();
   const { clearCodeEditorPage } = useStatesContext();
+  const { setMainLoading } = useStatesContext();
 
   const joinHistoryList = joinHistory?.map((item, index) => (
     <div
@@ -50,6 +51,8 @@ const JoinWindow = ({ close }) => {
 
   const handleTokenSubmit = (doc_id) => {
     const checkIfExist = async () => {
+      close();
+      setMainLoading(true);
       const { data, error } = await supabase
         .from("doc_public_info")
         .select()
@@ -61,12 +64,12 @@ const JoinWindow = ({ close }) => {
         setDocId(data.id);
         setJoined(true);
         clearCodeEditorPage();
-        close();
         toast.success("Room joined successfully.");
       } else {
         toast.error("Invalid join token.");
         console.log("document don't exist: ", joinToken, error);
       }
+      setMainLoading(false);
     };
     if (!doc_id) return;
     checkIfExist();

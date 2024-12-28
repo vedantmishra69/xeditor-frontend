@@ -11,7 +11,7 @@ import PopupBox from "./PopupBox";
 
 const OpenFile = ({ close }) => {
   const [userFiles, setUserFiles] = useState(null);
-  const { setDocId, setIsDefaultDoc, setCurrentFileName, docId } =
+  const { setDocId, setIsDefaultDoc, setCurrentFileName, docId, setJoined } =
     useCollabContext();
   const { userData } = useAuthContext();
   const item = useRef(null);
@@ -78,6 +78,7 @@ const OpenFile = ({ close }) => {
           onClick={() => {
             setDocId(obj.id);
             setIsDefaultDoc(obj.user_docs.is_default);
+            setJoined(false);
             close();
           }}
         >

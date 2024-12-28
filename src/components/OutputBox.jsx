@@ -5,7 +5,7 @@ const OutputBox = ({ value, onChange }) => {
   const clear = () => onChange("");
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="relative w-full h-full flex flex-col">
       <div className="flex flex-row relative justify-center py-1 border-b-2 border-color2 text-lg">
         <span>Output</span>
         <Trash2

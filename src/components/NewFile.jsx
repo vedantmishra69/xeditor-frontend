@@ -12,16 +12,20 @@ import { useChatContext } from "../contexts/ChatContext";
 import InputField from "./InputField";
 import DropDownMenuButton from "./DropDownMenuButton";
 import DefaultButton from "./DefaultButton";
+import { useStatesContext } from "../contexts/StatesContext";
 
 const NewFile = ({ close }) => {
   const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
   const [fileName, setFileName] = useState("");
   const { userData } = useAuthContext();
-  const { setDocId } = useCollabContext();
+  const { setDocId, setJoined } = useCollabContext();
   const { setMessageList } = useChatContext();
+  const { setMainLoading } = useStatesContext();
 
   const handleCreateFile = () => {
     const createNewFile = async (user_id, y_doc) => {
+      close();
+      setMainLoading(true);
       const { data, error } = await supabase
         .from("user_docs")
         .insert({ user_id: user_id, y_doc: y_doc, is_default: false })
@@ -30,7 +34,6 @@ const NewFile = ({ close }) => {
       if (error) {
         console.log("New doc creation error: ", error);
         toast.error("Can't add more than 30 documents");
-        close();
       } else if (id) {
         const { data, error } = await supabase.from("doc_public_info").insert({
           id: id,
@@ -43,9 +46,10 @@ const NewFile = ({ close }) => {
           toast.success("New file created successfully");
           setDocId(id);
           setMessageList([]);
-          close();
+          setJoined(false);
         }
       } else console.log("id not received");
+      setMainLoading(false);
     };
     if (fileName && userData) {
       createNewFile(

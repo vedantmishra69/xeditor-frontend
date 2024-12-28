@@ -1,3 +1,4 @@
+import { BarLoader } from "react-spinners";
 import ChatWindow from "../components/ChatWindow";
 import CodeEditor from "../components/CodeEditor";
 import InputBox from "../components/InputBox";
@@ -7,10 +8,12 @@ import TaskBar from "../components/TaskBar";
 import { useCodeContext } from "../contexts/CodeEditorContext";
 import { useCollabContext } from "../contexts/CollaborationContext";
 import { LANGUAGE_MAPPING } from "../lib/constants";
+import { useStatesContext } from "../contexts/StatesContext";
 
 const CodeEditorPage = () => {
   const { language, input, setInput, output, setOutput } = useCodeContext();
   const { currentFileName } = useCollabContext();
+  const { mainLoading } = useStatesContext();
 
   const displayFileName =
     currentFileName &&
@@ -27,7 +30,12 @@ const CodeEditorPage = () => {
   }
 
   return (
-    <div className="h-screen w-full bg-color1 flex flex-col text-color5 overflow-hidden">
+    <div className="relative h-screen w-full bg-color1 flex flex-col text-color5 overflow-hidden ">
+      {mainLoading && (
+        <div className="z-10 absolute top-0 inset-x-0 flex items-center justify-center bg-color1 bg-opacity-60">
+          <BarLoader height={2} width={window.innerWidth} color="#F8F8F2" />
+        </div>
+      )}
       <PopupWindows />
       <TaskBar />
       <div className="flex-1 flex flex-row overflow-hidden">

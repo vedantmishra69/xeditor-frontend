@@ -21,16 +21,21 @@ const Settings = ({ close }) => {
   const [fontSize, setFontSize] = useState(userData.font_size);
   const [wordWrap, setWordWrap] = useState(userData.word_wrap);
   const { isSignedIn } = useAuthContext();
-  const { clearCodeEditorPage } = useStatesContext();
+  const { clearCodeEditorPage, setMainLoading } = useStatesContext();
 
   const handleSignOut = () => {
     const signOut = async () => {
+      close();
+      setMainLoading(true);
       const { error } = await supabase.auth.signOut();
       if (error) console.log("error signing out: ", error);
-      else clearCodeEditorPage();
+      else {
+        clearCodeEditorPage();
+        toast.success("Signed out successfully");
+      }
+      setMainLoading(false);
     };
     signOut();
-    close();
   };
 
   const handleSave = async () => {
@@ -42,7 +47,8 @@ const Settings = ({ close }) => {
       font_size: fontSize,
       word_wrap: wordWrap,
     };
-    console.log(newData);
+    close();
+    setMainLoading(true);
     const { data, error } = await supabase
       .from("user_info")
       .update(newData)
@@ -55,6 +61,7 @@ const Settings = ({ close }) => {
       toast.success("Changes applied successfully");
       close();
     }
+    setMainLoading(false);
   };
 
   const themeOptions = [];

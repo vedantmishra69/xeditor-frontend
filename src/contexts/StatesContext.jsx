@@ -23,6 +23,9 @@ const StatesContext = ({ children }) => {
   const [newFileOpen, setNewFileOpen] = useState(false);
   const [joinOpen, setJoinOpen] = useState(false);
 
+  const [mainLoading, setMainLoading] = useState(false);
+  const [codeSubmitLoading, setCodeSubmitLoading] = useState(false);
+
   const { userData } = useAuthContext();
   const { isSubbed, setMessageList } = useChatContext();
   const { ydoc, docId, currentFileName, provider, awareness } =
@@ -85,6 +88,10 @@ const StatesContext = ({ children }) => {
     clearCodeEditorPage,
     fileListOpen,
     setFileListOpen,
+    codeSubmitLoading,
+    setCodeSubmitLoading,
+    mainLoading,
+    setMainLoading,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

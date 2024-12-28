@@ -33,6 +33,7 @@ const TaskBar = () => {
     setSettingsOpen,
     setUserListOpen,
     clearCodeEditorPage,
+    setMainLoading,
   } = useStatesContext();
   const { isSignedIn } = useAuthContext();
 
@@ -85,7 +86,12 @@ const TaskBar = () => {
   };
 
   const handleRun = () => {
-    handleSubmit();
+    const submit = async () => {
+      setMainLoading(true);
+      await handleSubmit();
+      setMainLoading(false);
+    };
+    submit();
   };
 
   const changeLanguage = (newVal) => handleLanguageChange(newVal, docId);
