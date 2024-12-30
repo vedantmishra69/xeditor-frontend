@@ -8,6 +8,7 @@ import InputField from "./InputField";
 import DefaultButton from "./DefaultButton";
 import { useStatesContext } from "../contexts/StatesContext";
 import Loader from "./Loader";
+import EmptyPlaceholder from "./EmptyPlaceholder";
 
 const JoinWindow = ({ close }) => {
   const [joinToken, setJoinToken] = useState("");
@@ -113,7 +114,13 @@ const JoinWindow = ({ close }) => {
         </div>
       </form>
       <div className="relative flex flex-col h-[50vh] overflow-y-auto pr-1">
-        {loading ? <Loader /> : joinHistoryList}
+        {loading ? (
+          <Loader />
+        ) : joinHistory.length ? (
+          joinHistoryList
+        ) : (
+          <EmptyPlaceholder text="No join history" />
+        )}
       </div>
     </div>
   );
