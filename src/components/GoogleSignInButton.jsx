@@ -1,12 +1,8 @@
-import { useCollabContext } from "../contexts/CollaborationContext";
 import { useAuthContext } from "../contexts/AuthContext";
 import supabase from "../lib/supabase";
-import * as Y from "yjs";
-import { Buffer } from "buffer";
 
 const GoogleSignInButton = () => {
-  const { provider, ydoc } = useCollabContext();
-  const { userData } = useAuthContext();
+  const { userData, handleSignInWithGoogleCustom } = useAuthContext();
 
   const handleSignIn = () => {
     const deleteUser = async () => {
@@ -14,18 +10,12 @@ const GoogleSignInButton = () => {
         user_id: userData?.id,
       });
       if (error) console.log("Error deleting user: ", error);
-      else console.log("User deleted successfully: ", data);
+      else {
+        console.log("User deleted successfully: ", data);
+        await handleSignInWithGoogleCustom();
+      }
     };
-    localStorage.setItem(
-      "xeditor-default",
-      JSON.stringify(Buffer.from(Y.encodeStateAsUpdate(ydoc.current)))
-    );
-    provider.destroy();
     deleteUser();
-    // handleSignInWithGoogle(response);
-    supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
   };
 
   return (

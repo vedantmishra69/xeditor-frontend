@@ -6,6 +6,7 @@ import { useAuthContext } from "./AuthContext";
 import { useChatContext } from "./ChatContext";
 import { useCodeContext } from "./CodeEditorContext";
 import toast from "react-hot-toast";
+import supabase from "../lib/supabase";
 
 const Context = createContext();
 const connectionToastId = toast.loading("Connecting...");
@@ -27,15 +28,62 @@ const StatesContext = ({ children }) => {
   const [codeSubmitLoading, setCodeSubmitLoading] = useState(false);
 
   const { userData } = useAuthContext();
-  const { isSubbed, setMessageList } = useChatContext();
-  const { ydoc, docId, currentFileName, provider, awareness } =
-    useCollabContext();
+  const { isSubbed, setMessageList, setChannel, setIsSubbed } =
+    useChatContext();
+  const {
+    ydoc,
+    docId,
+    currentFileName,
+    provider,
+    awareness,
+    setProvider,
+    setAwareness,
+    setConnectedUsers,
+    setConnectedUsersCount,
+    setCurrentFileName,
+    setIsDefaultDoc,
+    setDocId,
+    setJoined,
+  } = useCollabContext();
   const { editor, monaco, setInput, setOutput } = useCodeContext();
 
   const clearCodeEditorPage = () => {
     setInput("");
     setOutput("");
     setMessageList([]);
+  };
+
+  const clearConnections = () => {
+    ydoc.current.destroy();
+    clearCodeEditorPage();
+    setProvider(null);
+    setAwareness(null);
+    setConnectedUsers(null);
+    setConnectedUsersCount(null);
+    setCurrentFileName(null);
+    supabase.removeAllChannels();
+    setChannel(null);
+    setIsSubbed(false);
+  };
+
+  const clearConnectionsAndOpenDefault = () => {
+    setDocId(null);
+    setJoined(false);
+    setIsDefaultDoc(true);
+    clearConnections();
+  };
+
+  const clearConnectionsAndJoin = (docId) => {
+    clearConnections();
+    setDocId(docId);
+    setJoined(true);
+    setIsDefaultDoc(false);
+  };
+
+  const clearConnectionsAndOpen = (docId) => {
+    setDocId(docId);
+    setJoined(false);
+    clearConnections();
   };
 
   const clearChat = () => setMessageList([]);
@@ -92,6 +140,9 @@ const StatesContext = ({ children }) => {
     setCodeSubmitLoading,
     mainLoading,
     setMainLoading,
+    clearConnectionsAndOpenDefault,
+    clearConnectionsAndJoin,
+    clearConnectionsAndOpen,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

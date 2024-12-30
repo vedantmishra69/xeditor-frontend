@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import supabase from "../lib/supabase";
 import { useAuthContext } from "../contexts/AuthContext";
-import { useCollabContext } from "../contexts/CollaborationContext";
 import toast from "react-hot-toast";
 import { LANGUAGE_MAPPING } from "../lib/constants";
 import InputField from "./InputField";
@@ -12,9 +11,8 @@ import { useStatesContext } from "../contexts/StatesContext";
 const JoinWindow = ({ close }) => {
   const [joinToken, setJoinToken] = useState("");
   const [joinHistory, setJoinHistory] = useState([]);
-  const { setDocId, setJoined } = useCollabContext();
   const { userData } = useAuthContext();
-  const { clearCodeEditorPage } = useStatesContext();
+  const { clearConnectionsAndJoin } = useStatesContext();
   const { setMainLoading } = useStatesContext();
 
   const joinHistoryList = joinHistory?.map((item, index) => (
@@ -61,9 +59,7 @@ const JoinWindow = ({ close }) => {
       if (data) {
         console.log("doc id is valid: ", data);
         await updateJoinHistory(data.id, data.user_id);
-        setDocId(data.id);
-        setJoined(true);
-        clearCodeEditorPage();
+        clearConnectionsAndJoin(doc_id);
         toast.success("Room joined successfully.");
       } else {
         toast.error("Invalid join token.");

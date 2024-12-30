@@ -14,6 +14,12 @@ const AuthContext = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const prevData = useRef(null);
 
+  const handleSignInWithGoogleCustom = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+  };
+
   const handleSignInWithGoogle = async (response) => {
     try {
       const { data, error } = await supabase.auth.signInWithIdToken({
@@ -124,6 +130,7 @@ const AuthContext = ({ children }) => {
     isSignedIn,
     isLoading,
     handleSignInWithGoogle,
+    handleSignInWithGoogleCustom,
     userData,
     setUserData,
     isFirstSignIn,

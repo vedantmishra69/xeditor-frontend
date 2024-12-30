@@ -21,7 +21,7 @@ const Settings = ({ close }) => {
   const [fontSize, setFontSize] = useState(userData.font_size);
   const [wordWrap, setWordWrap] = useState(userData.word_wrap);
   const { isSignedIn } = useAuthContext();
-  const { clearCodeEditorPage, setMainLoading } = useStatesContext();
+  const { setMainLoading, clearConnectionsAndOpenDefault } = useStatesContext();
 
   const handleSignOut = () => {
     const signOut = async () => {
@@ -30,8 +30,8 @@ const Settings = ({ close }) => {
       const { error } = await supabase.auth.signOut();
       if (error) console.log("error signing out: ", error);
       else {
-        clearCodeEditorPage();
         toast.success("Signed out successfully");
+        clearConnectionsAndOpenDefault();
       }
       setMainLoading(false);
     };

@@ -8,8 +8,9 @@ import { cursorStyle, removeCursorStyle } from "../lib/util";
 import { useCodeContext } from "./CodeEditorContext";
 import { useAuthContext } from "./AuthContext";
 import supabase from "../lib/supabase";
-import { Buffer } from "buffer";
 import * as Y from "yjs";
+import { Buffer } from "buffer";
+import { IndexeddbPersistence } from "y-indexeddb";
 
 const Context = createContext();
 
@@ -26,14 +27,6 @@ const CollaborationContext = ({ children }) => {
   const { editor, setLanguage } = useCodeContext();
   const { userData, session } = useAuthContext();
 
-  const getLocalDoc = () => {
-    const doc = localStorage.getItem("xeditor-default");
-    if (doc) {
-      const obj = JSON.parse(doc);
-      return new Uint8Array(obj.data);
-    } else return Y.encodeStateAsUpdate(new Y.Doc());
-  };
-
   useEffect(() => {
     const upsertDocInfo = async (doc_Id) => {
       const { data, error } = await supabase
@@ -45,7 +38,8 @@ const CollaborationContext = ({ children }) => {
         setDocId(doc_Id);
       }
     };
-    const fetchDocId = async (user_id, y_doc) => {
+    const fetchDocId = async (user_id) => {
+      console.log("in fetchDocId: ", session.user.id);
       const { data, error } = await supabase
         .from("user_docs")
         .select("id")
@@ -58,7 +52,10 @@ const CollaborationContext = ({ children }) => {
       } else {
         const { data, error } = await supabase
           .from("user_docs")
-          .insert({ user_id: user_id, y_doc: y_doc })
+          .insert({
+            user_id: user_id,
+            y_doc: Buffer.from(Y.encodeStateAsUpdate(new Y.Doc())),
+          })
           .select("id");
         if (error) console.log("doc insert error: ", error);
         else if (data) {
@@ -67,11 +64,11 @@ const CollaborationContext = ({ children }) => {
         }
       }
     };
-    if (!userData?.id) return;
-    if (!joined) {
-      fetchDocId(userData?.id, Buffer.from(getLocalDoc()));
+    if (!session?.user?.id) return;
+    if (!docId) {
+      fetchDocId(session?.user?.id);
     }
-  }, [userData?.id, joined]);
+  }, [session?.user?.id, docId]);
 
   useEffect(() => {
     if (!docId || !session?.access_token) return;
@@ -81,8 +78,15 @@ const CollaborationContext = ({ children }) => {
       document: new Y.Doc(),
       token: "Bearer " + session.access_token,
     });
-    console.log("PROVIDER SET :", provider);
+    console.log("PROVIDER SET :", docId);
     ydoc.current = provider.document;
+    if (session?.user?.is_anonymous && !joined) {
+      const offlineProvider = new IndexeddbPersistence(
+        "xeditor-default",
+        ydoc.current
+      );
+      offlineProvider.on("synced", () => console.log("OFFLINE PROVIDER SET"));
+    }
     setProvider(provider);
     setAwareness(provider.awareness);
 
@@ -90,7 +94,7 @@ const CollaborationContext = ({ children }) => {
       provider.destroy();
       provider.awareness.destroy();
     };
-  }, [docId, session?.access_token]);
+  }, [docId, session?.access_token, session?.user?.is_anonymous, joined]);
 
   useEffect(() => {
     const fetchFileInfo = async () => {
@@ -190,6 +194,10 @@ const CollaborationContext = ({ children }) => {
     setIsDefaultDoc,
     provider,
     awareness,
+    setProvider,
+    setAwareness,
+    setConnectedUsers,
+    setConnectedUsersCount,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

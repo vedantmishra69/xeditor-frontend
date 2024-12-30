@@ -6,9 +6,7 @@ import supabase from "../lib/supabase";
 import { useAuthContext } from "../contexts/AuthContext";
 import { Buffer } from "buffer";
 import * as Y from "yjs";
-import { useCollabContext } from "../contexts/CollaborationContext";
 import toast from "react-hot-toast";
-import { useChatContext } from "../contexts/ChatContext";
 import InputField from "./InputField";
 import DropDownMenuButton from "./DropDownMenuButton";
 import DefaultButton from "./DefaultButton";
@@ -18,9 +16,7 @@ const NewFile = ({ close }) => {
   const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
   const [fileName, setFileName] = useState("");
   const { userData } = useAuthContext();
-  const { setDocId, setJoined } = useCollabContext();
-  const { setMessageList } = useChatContext();
-  const { setMainLoading } = useStatesContext();
+  const { setMainLoading, clearConnectionsAndOpen } = useStatesContext();
 
   const handleCreateFile = () => {
     const createNewFile = async (user_id, y_doc) => {
@@ -44,9 +40,7 @@ const NewFile = ({ close }) => {
         else {
           console.log("new doc info inserted: ", data);
           toast.success("New file created successfully");
-          setDocId(id);
-          setMessageList([]);
-          setJoined(false);
+          clearConnectionsAndOpen(id);
         }
       } else console.log("id not received");
       setMainLoading(false);

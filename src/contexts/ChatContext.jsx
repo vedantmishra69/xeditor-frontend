@@ -34,7 +34,14 @@ const ChatContext = ({ children }) => {
         });
   }, [channel]);
 
-  const value = { messageList, channel, isSubbed, setMessageList };
+  const value = {
+    messageList,
+    channel,
+    isSubbed,
+    setMessageList,
+    setChannel,
+    setIsSubbed,
+  };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };

@@ -24,7 +24,7 @@ import { useAuthContext } from "../contexts/AuthContext";
 const TaskBar = () => {
   const { language, handleLanguageChange, sourceCode, handleSubmit } =
     useCodeContext();
-  const { docId, currentFileName, joined, setJoined, connectedUsersCount } =
+  const { docId, currentFileName, joined, connectedUsersCount } =
     useCollabContext();
   const {
     setNewFileOpen,
@@ -32,7 +32,7 @@ const TaskBar = () => {
     setFileListOpen,
     setSettingsOpen,
     setUserListOpen,
-    clearCodeEditorPage,
+    clearConnectionsAndOpenDefault,
     setMainLoading,
   } = useStatesContext();
   const { isSignedIn } = useAuthContext();
@@ -56,8 +56,7 @@ const TaskBar = () => {
   const handleJoin = () => setJoinOpen(true);
 
   const handleLeave = () => {
-    setJoined(false);
-    clearCodeEditorPage();
+    clearConnectionsAndOpenDefault();
     toast.success("Room left successfully.");
   };
 
