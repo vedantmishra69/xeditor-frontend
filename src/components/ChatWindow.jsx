@@ -12,7 +12,9 @@ const ChatWindow = () => {
 
   const messageBoxList = messageList?.map((item, index) => (
     <div key={index} className="w-full my-1">
-      <span style={{ color: item.color }}>{item.user}</span>
+      <span style={{ color: item.color }} className="cursor-default">
+        {item.user}
+      </span>
       {`: ${item.message}`}
     </div>
   ));
@@ -39,7 +41,7 @@ const ChatWindow = () => {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <div className="flex flex-row relative justify-center py-1 border-b-2 border-color2 text-lg">
+      <div className="flex flex-row relative justify-center py-1 border-b-2 border-color2 text-lg cursor-default">
         <span>Chat</span>
         <Trash2
           className="absolute right-2 text-slate-400 hover:text-color4"

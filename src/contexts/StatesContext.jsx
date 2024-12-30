@@ -24,7 +24,7 @@ const StatesContext = ({ children }) => {
   const [newFileOpen, setNewFileOpen] = useState(false);
   const [joinOpen, setJoinOpen] = useState(false);
 
-  const [mainLoading, setMainLoading] = useState(false);
+  const [mainLoading, setMainLoading] = useState(true);
   const [codeSubmitLoading, setCodeSubmitLoading] = useState(false);
 
   const { userData } = useAuthContext();
@@ -111,6 +111,12 @@ const StatesContext = ({ children }) => {
     if (docConnection && chatConnection && userConnected)
       toast.success("Connected!", { id: connectionToastId, duration: 1000 });
   }, [docConnection, chatConnection, userConnected]);
+
+  useEffect(() => {
+    if (docConnection && chatConnection && userConnected && editorSetup) {
+      setMainLoading(false);
+    }
+  }, [docConnection, chatConnection, userConnected, editorSetup]);
 
   useEffect(() => {
     if (editorSetup)

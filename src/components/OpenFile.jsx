@@ -8,6 +8,7 @@ import { useAuthContext } from "../contexts/AuthContext";
 import RenameFile from "./RenameFile";
 import DeleteConfirmation from "./DeleteConfirmation";
 import PopupBox from "./PopupBox";
+import Loader from "./Loader";
 
 const OpenFile = ({ close }) => {
   const [userFiles, setUserFiles] = useState(null);
@@ -20,6 +21,7 @@ const OpenFile = ({ close }) => {
 
   const [renameFileOpen, setRenameFileOpen] = useState(false);
   const [deleteFileOpen, setDeleteFileOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const deleteFileName = (confirm) => {
     const deleteFile = async () => {
@@ -110,6 +112,7 @@ const OpenFile = ({ close }) => {
 
   useEffect(() => {
     const fetchFiles = async (user_id) => {
+      setLoading(true);
       const { data, error } = await supabase
         .from("doc_public_info")
         .select("id, name, user_docs!inner(is_default)")
@@ -120,6 +123,7 @@ const OpenFile = ({ close }) => {
         console.log("fetched files: ", data);
         setUserFiles(data);
       }
+      setLoading(false);
     };
     if (!userData?.id) return;
     fetchFiles(userData.id);
@@ -148,8 +152,8 @@ const OpenFile = ({ close }) => {
           </PopupBox>
         </div>
       )}
-      <div className="flex flex-col text-lg px-1 bg-color1 max-h-[50vh] overflow-y-auto">
-        {userFilesList}
+      <div className="relative flex flex-col text-lg px-1 bg-color1 h-[50vh] overflow-y-auto">
+        {loading ? <Loader /> : userFilesList}
       </div>
     </>
   );

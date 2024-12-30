@@ -19,7 +19,7 @@ const UserList = () => {
     );
   }
   return (
-    <div className="flex flex-col bg-color1 rounded-lg max-h-[50vh] overflow-y-auto">
+    <div className="flex flex-col bg-color1 rounded-lg max-h-[50vh] overflow-y-auto cursor-default">
       {userList}
     </div>
   );

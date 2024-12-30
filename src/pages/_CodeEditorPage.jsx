@@ -40,8 +40,8 @@ const CodeEditorPage = () => {
       <TaskBar />
       <div className="flex-1 flex flex-row overflow-hidden">
         <div className="flex-1 flex flex-col border-x-2 border-b-2 border-color2 overflow-hidden">
-          <div className="flex justify-center text-lg border-b-2 border-color2 py-1">
-            {displayFileName}
+          <div className="flex justify-center text-lg border-b-2 border-color2 py-1 cursor-default">
+            {displayFileName || "loading"}
           </div>
           <div className="flex-1 overflow-hidden">
             <CodeEditor />

@@ -11,7 +11,6 @@ const AuthContext = ({ children }) => {
   const [isFirstSignIn, setIsFirstSignIn] = useState(false);
   const [session, setSession] = useState(null);
   const [userData, setUserData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const prevData = useRef(null);
 
   const handleSignInWithGoogleCustom = async () => {
@@ -48,6 +47,7 @@ const AuthContext = ({ children }) => {
   const initializeValues = async (session) => {
     try {
       if (!session?.user?.id) return;
+      if (prevData.current?.id === session?.user?.id) return;
       const { data, error } = await supabase.rpc("upsert_user_info", {
         p_id: session.user.id,
         p_name: session.user.user_metadata?.full_name || getRandomName(),
@@ -55,13 +55,14 @@ const AuthContext = ({ children }) => {
       });
 
       if (error) throw error;
-      if (JSON.stringify(prevData.current) !== JSON.stringify(data)) {
-        prevData.current = data;
-        setUserData(data);
-        console.log("INITIALIZED");
-      }
-    } catch (error) {
-      console.error("Error initializing user values:", error.message);
+      prevData.current = data;
+      setUserData(data);
+      console.log("INITIALIZED");
+    } catch (err) {
+      console.error("Error initializing user values:", err.message);
+      const { error } = await supabase.auth.signOut();
+      if (error) console.log("error signing out when user not valid: ", error);
+      else window.location.reload();
     }
   };
 
@@ -81,18 +82,15 @@ const AuthContext = ({ children }) => {
 
       switch (event) {
         case "INITIAL_SESSION": {
-          setIsLoading(true);
           if (!session) {
             setTimeout(async () => {
               await signInAnon();
-              setIsLoading(false);
             }, 0);
           } else {
             setIsSignedIn(!session.user.is_anonymous);
             setTimeout(async () => {
               await initializeValues(session);
               await setIsFirstSignInFunction(session.user);
-              setIsLoading(false);
             }, 0);
           }
           break;
@@ -128,7 +126,6 @@ const AuthContext = ({ children }) => {
   const value = {
     session,
     isSignedIn,
-    isLoading,
     handleSignInWithGoogle,
     handleSignInWithGoogleCustom,
     userData,

@@ -28,7 +28,7 @@ const PopupWindows = () => {
       fileListOpen) && (
       <div className="fixed inset-0 z-10 flex justify-center items-center backdrop-brightness-50">
         <div className="flex bg-color1 flex-col min-w-96 w-fit border-2 border-color2">
-          <div className="relative flex flex-row justify-center text-xl h-8">
+          <div className="relative flex flex-row justify-center text-xl h-8 cursor-default">
             <span className="flex">
               {settingsOpen && "Settings"}
               {userListOpen && "Online Users"}

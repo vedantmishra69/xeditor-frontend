@@ -7,10 +7,12 @@ import { LANGUAGE_MAPPING } from "../lib/constants";
 import InputField from "./InputField";
 import DefaultButton from "./DefaultButton";
 import { useStatesContext } from "../contexts/StatesContext";
+import Loader from "./Loader";
 
 const JoinWindow = ({ close }) => {
   const [joinToken, setJoinToken] = useState("");
   const [joinHistory, setJoinHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { userData } = useAuthContext();
   const { clearConnectionsAndJoin } = useStatesContext();
   const { setMainLoading } = useStatesContext();
@@ -18,7 +20,7 @@ const JoinWindow = ({ close }) => {
   const joinHistoryList = joinHistory?.map((item, index) => (
     <div
       key={index}
-      className="flex flex-row justify-between p-2 border-2 border-color1 hover:border-color2"
+      className="flex flex-row justify-between p-2 border-2 border-color1 hover:border-color2 cursor-pointer"
       onClick={() => handleTokenSubmit(item.doc_id)}
     >
       <div className="">{`${item.doc_public_info.name}${
@@ -73,6 +75,7 @@ const JoinWindow = ({ close }) => {
 
   useEffect(() => {
     const fetchHistory = async () => {
+      setLoading(true);
       const { data, error } = await supabase
         .from("join_history")
         .select(
@@ -84,6 +87,7 @@ const JoinWindow = ({ close }) => {
         console.log("join history fetched successfully: ", data);
         setJoinHistory(data);
       } else console.log(error);
+      setLoading(false);
     };
     if (userData?.id) fetchHistory();
   }, [userData?.id]);
@@ -108,8 +112,8 @@ const JoinWindow = ({ close }) => {
           <DefaultButton text="Join" type="submit" />
         </div>
       </form>
-      <div className="flex flex-col max-h-[50vh] overflow-y-auto pr-1">
-        {joinHistoryList}
+      <div className="relative flex flex-col h-[50vh] overflow-y-auto pr-1">
+        {loading ? <Loader /> : joinHistoryList}
       </div>
     </div>
   );

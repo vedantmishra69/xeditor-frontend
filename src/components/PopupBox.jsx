@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 
 const PopupBox = ({ children, name = "BoxName", close }) => {
   return (
-    <div className="flex flex-col min-w-96 w-fit border-2 border-color2 bg-color1">
+    <div className="flex flex-col min-w-96 w-fit border-2 border-color2 bg-color1 cursor-default">
       <div className="relative flex flex-row justify-center text-xl h-8">
         <span className="flex">{name}</span>
         <X

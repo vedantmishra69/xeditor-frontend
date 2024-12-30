@@ -6,7 +6,7 @@ const OutputBox = ({ value, onChange }) => {
 
   return (
     <div className="relative w-full h-full flex flex-col">
-      <div className="flex flex-row relative justify-center py-1 border-b-2 border-color2 text-lg">
+      <div className="flex flex-row relative justify-center py-1 border-b-2 border-color2 text-lg cursor-default">
         <span>Output</span>
         <Trash2
           className="absolute right-2 text-slate-400 hover:text-color4"

@@ -6,7 +6,7 @@ const InputBox = ({ value, onChange }) => {
 
   return (
     <div className="w-full h-full flex flex-col border-r-2 border-color2">
-      <div className="flex flex-row relative justify-center py-1 border-b-2 border-color2 text-lg">
+      <div className="flex flex-row relative justify-center py-1 border-b-2 border-color2 text-lg cursor-default">
         <span>Input</span>
         <Trash2
           className="absolute right-2 text-slate-400 hover:text-color4"
