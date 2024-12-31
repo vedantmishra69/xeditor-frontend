@@ -54,10 +54,12 @@ const NewFile = ({ close }) => {
       setMainLoading(false);
     };
     if (fileName && userData) {
-      createNewFile(
-        userData?.id,
-        Buffer.from(Y.encodeStateAsUpdate(new Y.Doc()))
-      );
+      if (fileName.length > 0 && fileName.length <= 50)
+        createNewFile(
+          userData?.id,
+          Buffer.from(Y.encodeStateAsUpdate(new Y.Doc()))
+        );
+      else toast.error("length of file name should between 1 and 50.");
     }
   };
 

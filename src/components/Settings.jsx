@@ -50,6 +50,10 @@ const Settings = ({ close }) => {
       font_size: fontSize,
       word_wrap: wordWrap,
     };
+    if (!(name.length > 0 && name.length <= 50)) {
+      toast.error("length of user's name should between 1 and 50.");
+      return;
+    }
     close();
     setMainLoading(true);
     const { data, error } = await supabase

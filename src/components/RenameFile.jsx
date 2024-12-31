@@ -25,7 +25,8 @@ const RenameFile = ({ item, updateName }) => {
         logInfo("doc name successfully updated");
       }
     };
-    renameFile();
+    if (newName.length > 0 && newName.length <= 50) renameFile();
+    else toast.error("length of file name should between 1 and 50.");
   };
 
   return (
