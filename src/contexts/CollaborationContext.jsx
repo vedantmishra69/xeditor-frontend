@@ -3,14 +3,14 @@
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import { MonacoBinding } from "y-monaco";
 import { useState, useEffect, useRef, createContext, useContext } from "react";
-import { SOCKET_URL } from "../lib/constants";
+import { DEFAULT_CODE_BUFFER, SOCKET_URL } from "../lib/constants";
 import { cursorStyle, removeCursorStyle } from "../lib/util";
 import { useCodeContext } from "./CodeEditorContext";
 import { useAuthContext } from "./AuthContext";
 import supabase from "../lib/supabase";
 import * as Y from "yjs";
-import { Buffer } from "buffer";
 import { IndexeddbPersistence } from "y-indexeddb";
+import { logInfo } from "../lib/logging";
 
 const Context = createContext();
 
@@ -54,7 +54,7 @@ const CollaborationContext = ({ children }) => {
           .from("user_docs")
           .insert({
             user_id: user_id,
-            y_doc: Buffer.from(Y.encodeStateAsUpdate(new Y.Doc())),
+            y_doc: DEFAULT_CODE_BUFFER,
           })
           .select("id");
         if (error) console.log("doc insert error: ", error);
@@ -78,7 +78,7 @@ const CollaborationContext = ({ children }) => {
       document: new Y.Doc(),
       token: "Bearer " + session.access_token,
     });
-    console.log("PROVIDER SET :", docId);
+    logInfo("PROVIDER SET :", docId);
     ydoc.current = provider.document;
     if (session?.user?.is_anonymous && !joined) {
       const offlineProvider = new IndexeddbPersistence(

@@ -1,6 +1,6 @@
 export const api = import.meta.env.VITE_BACKEND_API;
-export const API_URL = `https://${api}`;
-export const SOCKET_URL = `wss://${api}`;
+export const API_URL = `http://${api}`;
+export const SOCKET_URL = `ws://${api}`;
 export const DEFAULT_LANGUAGE = "Python (3.8.1)";
 export const DEFAULT_CODE = "";
 export const DEFAULT_THEME = "Dracula";
@@ -259,3 +259,47 @@ export const THEME_LIST = [
   "Xcode",
   "Zenburnesque",
 ];
+
+export const DEFAULT_CODE_BASE64 =
+  "JycnCiAgICBfXyAgX18gICAgICAgIF8gXyBfICAgICAgICAgICAgIAogICAgXCBcLyAvX19fICBfX3wgKF8pIHxfIF9fXyAgXyBfXyAKICAgICBcICAvLyBfIFwvIF9gIHwgfCBfXy8gXyBcfCAnX198CiAgICAgLyAgXCAgX18vIChffCB8IHwgfHwgKF8pIHwgfCAgIAogICAgL18vXF9cX19ffFxfXyxffF98XF9fXF9fXy98X3wgICAKCiAgICAgICAgICAgIENvZGUgJiBDb2xsYWIKClhlZGl0b3IgaXMgYSByZWFsLXRpbWUgY29sbGFib3JhdGl2ZSBjb2RlIGVkaXRvciBzdXBwb3J0aW5nIG11bHRpcGxlIHByb2dyYW1taW5nIGxhbmd1YWdlcywgaW5jbHVkaW5nIEMsIEMrKywgSmF2YSwgUHl0aG9uLCBhbmQgSmF2YVNjcmlwdC4gQ29sbGFib3JhdGUgc2VhbWxlc3NseSBieSBpbnZpdGluZyBmcmllbmRzIGFuZCBlbmpveSBidWlsdC1pbiBjaGF0IGZ1bmN0aW9uYWxpdHkgZm9yIGVmZmVjdGl2ZSBjb21tdW5pY2F0aW9uLiBTaWduIGluIHRvIGNyZWF0ZSBhbmQgbWFuYWdlIG11bHRpcGxlIGZpbGVzLCBhY2Nlc3NpYmxlIGFjcm9zcyBhbGwgeW91ciBkZXZpY2VzLgoKJycnCnByaW50KCJoZWxsbyIp";
+
+export const DEFAULT_CODE_BUFFER = {
+  data: [
+    1, 1, 250, 246, 181, 244, 3, 0, 4, 1, 0, 195, 4, 39, 39, 39, 13, 10, 32, 32,
+    32, 32, 95, 95, 32, 32, 95, 95, 32, 32, 32, 32, 32, 32, 32, 32, 95, 32, 95,
+    32, 95, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 13, 10, 32, 32,
+    32, 32, 92, 32, 92, 47, 32, 47, 95, 95, 95, 32, 32, 95, 95, 124, 32, 40, 95,
+    41, 32, 124, 95, 32, 95, 95, 95, 32, 32, 95, 32, 95, 95, 32, 13, 10, 32, 32,
+    32, 32, 32, 92, 32, 32, 47, 47, 32, 95, 32, 92, 47, 32, 95, 96, 32, 124, 32,
+    124, 32, 95, 95, 47, 32, 95, 32, 92, 124, 32, 39, 95, 95, 124, 13, 10, 32,
+    32, 32, 32, 32, 47, 32, 32, 92, 32, 32, 95, 95, 47, 32, 40, 95, 124, 32,
+    124, 32, 124, 32, 124, 124, 32, 40, 95, 41, 32, 124, 32, 124, 32, 32, 32,
+    13, 10, 32, 32, 32, 32, 47, 95, 47, 92, 95, 92, 95, 95, 95, 124, 92, 95, 95,
+    44, 95, 124, 95, 124, 92, 95, 95, 92, 95, 95, 95, 47, 124, 95, 124, 32, 32,
+    32, 13, 10, 13, 10, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 67, 111,
+    100, 101, 32, 38, 32, 67, 111, 108, 108, 97, 98, 13, 10, 13, 10, 88, 101,
+    100, 105, 116, 111, 114, 32, 105, 115, 32, 97, 32, 114, 101, 97, 108, 45,
+    116, 105, 109, 101, 32, 99, 111, 108, 108, 97, 98, 111, 114, 97, 116, 105,
+    118, 101, 32, 99, 111, 100, 101, 32, 101, 100, 105, 116, 111, 114, 32, 115,
+    117, 112, 112, 111, 114, 116, 105, 110, 103, 32, 109, 117, 108, 116, 105,
+    112, 108, 101, 32, 112, 114, 111, 103, 114, 97, 109, 109, 105, 110, 103, 32,
+    108, 97, 110, 103, 117, 97, 103, 101, 115, 44, 32, 105, 110, 99, 108, 117,
+    100, 105, 110, 103, 32, 67, 44, 32, 67, 43, 43, 44, 32, 74, 97, 118, 97, 44,
+    32, 80, 121, 116, 104, 111, 110, 44, 32, 97, 110, 100, 32, 74, 97, 118, 97,
+    83, 99, 114, 105, 112, 116, 46, 32, 67, 111, 108, 108, 97, 98, 111, 114, 97,
+    116, 101, 32, 115, 101, 97, 109, 108, 101, 115, 115, 108, 121, 32, 98, 121,
+    32, 105, 110, 118, 105, 116, 105, 110, 103, 32, 102, 114, 105, 101, 110,
+    100, 115, 32, 97, 110, 100, 32, 101, 110, 106, 111, 121, 32, 98, 117, 105,
+    108, 116, 45, 105, 110, 32, 99, 104, 97, 116, 32, 102, 117, 110, 99, 116,
+    105, 111, 110, 97, 108, 105, 116, 121, 32, 102, 111, 114, 32, 101, 102, 102,
+    101, 99, 116, 105, 118, 101, 32, 99, 111, 109, 109, 117, 110, 105, 99, 97,
+    116, 105, 111, 110, 46, 32, 83, 105, 103, 110, 32, 105, 110, 32, 116, 111,
+    32, 99, 114, 101, 97, 116, 101, 32, 97, 110, 100, 32, 109, 97, 110, 97, 103,
+    101, 32, 109, 117, 108, 116, 105, 112, 108, 101, 32, 102, 105, 108, 101,
+    115, 44, 32, 97, 99, 99, 101, 115, 115, 105, 98, 108, 101, 32, 97, 99, 114,
+    111, 115, 115, 32, 97, 108, 108, 32, 121, 111, 117, 114, 32, 100, 101, 118,
+    105, 99, 101, 115, 46, 13, 10, 13, 10, 39, 39, 39, 13, 10, 112, 114, 105,
+    110, 116, 40, 34, 104, 101, 108, 108, 111, 34, 41, 0,
+  ],
+  type: "Buffer",
+};
