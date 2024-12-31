@@ -47,7 +47,7 @@ export const CodeEditorContext = ({ children }) => {
     if (sourceCode && userData) {
       setOutput("");
       const data = await submitCode(language, sourceCode, input, userData);
-      if (!data.error && data.token) {
+      if (!data?.error && data?.token) {
         const result = await fetchResult(data.token);
         if (result) {
           setOutput(

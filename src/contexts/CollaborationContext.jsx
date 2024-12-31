@@ -85,18 +85,19 @@ const CollaborationContext = ({ children }) => {
       document: new Y.Doc(),
       token: "Bearer " + session.access_token,
     });
-    logInfo("PROVIDER SET :", docId);
-    ydoc.current = provider.document;
-    if (session?.user?.is_anonymous && !joined) {
-      const offlineProvider = new IndexeddbPersistence(
-        "xeditor-default",
-        ydoc.current
-      );
-      offlineProvider.on("synced", () => logInfo("OFFLINE PERSISTENCE SET"));
-    }
-    setProvider(provider);
-    setAwareness(provider.awareness);
-
+    provider.on("connect", () => {
+      logInfo("PROVIDER SET :", docId);
+      ydoc.current = provider.document;
+      if (session?.user?.is_anonymous && !joined) {
+        const offlineProvider = new IndexeddbPersistence(
+          "xeditor-default",
+          ydoc.current
+        );
+        offlineProvider.on("synced", () => logInfo("OFFLINE PERSISTENCE SET"));
+      }
+      setProvider(provider);
+      setAwareness(provider.awareness);
+    });
     return () => {
       provider.destroy();
       provider.awareness.destroy();
