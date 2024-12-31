@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import supabase from "../lib/supabase";
 import { getRandomColor, getRandomName } from "../lib/util";
+import { logError, logInfo } from "../lib/logging";
 
 const Context = createContext(null);
 
@@ -14,11 +15,14 @@ const AuthContext = ({ children }) => {
   const prevData = useRef(null);
 
   const handleSignInWithGoogleCustom = async () => {
-    await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
     });
+    if (error) logError("Error sign in with google: ", error);
+    else logInfo("Signing in with google: ", data);
   };
 
+  // not in use currently
   const handleSignInWithGoogle = async (response) => {
     try {
       const { data, error } = await supabase.auth.signInWithIdToken({
@@ -39,7 +43,7 @@ const AuthContext = ({ children }) => {
       if (error) throw error;
       return data;
     } catch (error) {
-      console.error("Error signing in anonymously:", error.message);
+      logError("Error signing in anonymously:", error.message);
       throw error;
     }
   };
@@ -57,11 +61,11 @@ const AuthContext = ({ children }) => {
       if (error) throw error;
       prevData.current = data;
       setUserData(data);
-      console.log("INITIALIZED");
+      logInfo("INITIALIZED");
     } catch (err) {
-      console.error("Error initializing user values:", err.message);
+      logError("Error initializing user values:", err.message);
       const { error } = await supabase.auth.signOut();
-      if (error) console.log("error signing out when user not valid: ", error);
+      if (error) logError("error signing out when user not valid: ", error);
       else window.location.reload();
     }
   };
@@ -70,14 +74,14 @@ const AuthContext = ({ children }) => {
     const date1 = new Date(user.last_sign_in_at);
     const date2 = new Date(user.created_at);
     if (Math.abs(date2.getTime() - date1.getTime()) / (1000 * 60) < 1) {
-      console.log("first time!!");
+      logInfo("first time!!");
       setIsFirstSignIn(true);
     }
   };
 
   useEffect(() => {
     const handleAuthStateChange = (event, session) => {
-      console.log(event);
+      logInfo(event);
       setSession(session);
 
       switch (event) {

@@ -9,6 +9,7 @@ import DefaultButton from "./DefaultButton";
 import { useStatesContext } from "../contexts/StatesContext";
 import Loader from "./Loader";
 import EmptyPlaceholder from "./EmptyPlaceholder";
+import { logError, logInfo } from "../lib/logging";
 
 const JoinWindow = ({ close }) => {
   const [joinToken, setJoinToken] = useState("");
@@ -46,8 +47,8 @@ const JoinWindow = ({ close }) => {
         { onConflict: "doc_id, joiner_id, owner_id", ignoreDuplicates: false }
       )
       .select();
-    if (data) console.log("successfully upserted join history: ", data);
-    else console.log("failed to upsert join history: ", error);
+    if (data) logInfo("successfully upserted join history: ", data);
+    else logError("failed to upsert join history: ", error);
   };
 
   const handleTokenSubmit = (doc_id) => {
@@ -60,13 +61,13 @@ const JoinWindow = ({ close }) => {
         .eq("id", doc_id)
         .single();
       if (data) {
-        console.log("doc id is valid: ", data);
+        logInfo("doc id is valid: ", data);
         await updateJoinHistory(data.id, data.user_id);
         clearConnectionsAndJoin(doc_id);
         toast.success("Room joined successfully.");
       } else {
         toast.error("Invalid join token.");
-        console.log("document don't exist: ", joinToken, error);
+        logError("document don't exist: ", joinToken, error);
       }
       setMainLoading(false);
     };
@@ -85,9 +86,12 @@ const JoinWindow = ({ close }) => {
         .eq("joiner_id", userData?.id)
         .order("last_joined_at", { ascending: false });
       if (data) {
-        console.log("join history fetched successfully: ", data);
+        logInfo("join history fetched successfully: ", data);
         setJoinHistory(data);
-      } else console.log(error);
+      } else {
+        logError("error in fetching join history: ", error);
+        toast.error("Error in fetching join history.");
+      }
       setLoading(false);
     };
     if (userData?.id) fetchHistory();

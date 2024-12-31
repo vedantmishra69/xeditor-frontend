@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import supabase from "../lib/supabase";
 import { useCollabContext } from "./CollaborationContext";
+import { logInfo } from "../lib/logging";
 
 const Context = createContext();
 
@@ -24,11 +25,11 @@ const ChatContext = ({ children }) => {
     if (channel)
       channel
         .on("broadcast", { event: "chat" }, (obj) => {
-          console.log(obj.payload);
+          logInfo(obj.payload);
           setMessageList((list) => [...list, obj.payload]);
         })
         .subscribe((status) => {
-          console.log("CHANNEL ", status);
+          logInfo("CHANNEL ", status);
           if (status !== "SUBSCRIBED") return null;
           setIsSubbed(true);
         });

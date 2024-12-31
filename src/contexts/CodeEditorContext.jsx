@@ -10,6 +10,8 @@ import {
 import { fetchResult, getThemeName, submitCode } from "../lib/util";
 import { useAuthContext } from "./AuthContext";
 import supabase from "../lib/supabase";
+import { logError, logInfo } from "../lib/logging";
+import toast from "react-hot-toast";
 
 const Context = createContext();
 
@@ -30,11 +32,15 @@ export const CodeEditorContext = ({ children }) => {
         .from("doc_public_info")
         .update({ language: name })
         .eq("id", id);
-      if (error) console.log("language update error: ", error);
-      else console.log("language updated ", data);
+      if (error) {
+        logError("language update error: ", error);
+        toast.error("Unable to change language, Please try again.");
+      } else {
+        logInfo("language updated ", data);
+        setLanguage(name);
+      }
     };
     changeLanguage();
-    setLanguage(name);
   };
 
   const handleSubmit = async () => {
@@ -56,8 +62,8 @@ export const CodeEditorContext = ({ children }) => {
               result.time
             } s\nMemory: ${result.memory} KB`
           );
-        }
-      }
+        } else toast.error("Unable to fetch results.");
+      } else toast.error("Unable to submit.");
     }
   };
 

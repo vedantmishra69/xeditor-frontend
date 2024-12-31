@@ -11,6 +11,7 @@ import InputField from "./InputField";
 import DropDownMenuButton from "./DropDownMenuButton";
 import DefaultButton from "./DefaultButton";
 import { useStatesContext } from "../contexts/StatesContext";
+import { logError, logInfo } from "../lib/logging";
 
 const NewFile = ({ close }) => {
   const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
@@ -28,21 +29,28 @@ const NewFile = ({ close }) => {
         .select("id");
       const id = data ? data[0]?.id : null;
       if (error) {
-        console.log("New doc creation error: ", error);
-        toast.error("Can't add more than 30 documents");
+        logError("New doc creation error: ", error);
+        toast.error(
+          "Error in adding document or can't add more than 30 documents."
+        );
       } else if (id) {
         const { data, error } = await supabase.from("doc_public_info").insert({
           id: id,
           name: fileName,
           language: language,
         });
-        if (error) console.log("insert new doc info error: ", error);
-        else {
-          console.log("new doc info inserted: ", data);
+        if (error) {
+          logError("insert new doc info error: ", error);
+          toast.error("Unable to create file, Please try again");
+        } else {
+          logInfo("new doc info inserted: ", data);
           toast.success("New file created successfully");
           clearConnectionsAndOpen(id);
         }
-      } else console.log("id not received");
+      } else {
+        logError("id not received");
+        toast.error("Error in adding document, Please try again");
+      }
       setMainLoading(false);
     };
     if (fileName && userData) {

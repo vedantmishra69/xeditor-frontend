@@ -7,6 +7,7 @@ import {
 } from "unique-names-generator";
 import randomColor from "randomcolor";
 import supabase from "./supabase";
+import { logError } from "./logging";
 
 export const submitCode = async (language, sourceCode, stdin, userData) => {
   const body = {
@@ -23,7 +24,7 @@ export const submitCode = async (language, sourceCode, stdin, userData) => {
     error,
   } = await supabase.auth.getSession();
   if (error) {
-    console.log("Error getting access token in submitCode()");
+    logError("Error getting access token in submitCode()");
     return;
   }
   try {
@@ -37,9 +38,9 @@ export const submitCode = async (language, sourceCode, stdin, userData) => {
     });
     const result = await response.json();
     if (response.status < 300) return result;
-    else console.error(result);
+    else logError(result);
   } catch (error) {
-    console.error(error.message);
+    logError(error.message);
   }
 };
 
@@ -66,7 +67,7 @@ export const fetchResult = async (token) => {
       });
       const submission = await response.json();
       if (response.status !== 200) {
-        console.error(submission);
+        logError(submission);
         return;
       }
       if (submission.status.id >= 3) {
@@ -87,7 +88,7 @@ export const fetchResult = async (token) => {
         };
       }
       if (Date.now() - startTime > config.timeout) {
-        console.error("Polling timeout exceeded!");
+        logError("Polling timeout exceeded!");
         return;
       }
       interval = Math.min(
@@ -96,7 +97,7 @@ export const fetchResult = async (token) => {
       );
       await delay(interval);
     } catch (error) {
-      console.error(error.message);
+      logError(error.message);
     }
   }
 };

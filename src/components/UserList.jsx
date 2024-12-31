@@ -1,11 +1,12 @@
 import { useAuthContext } from "../contexts/AuthContext";
 import { useCollabContext } from "../contexts/CollaborationContext";
+import { logInfo } from "../lib/logging";
 
 const UserList = () => {
   const { connectedUsers } = useCollabContext();
   const { userData } = useAuthContext();
   const userList = [];
-  console.log(connectedUsers);
+  logInfo("Connected users: ", connectedUsers);
   for (const [key, item] of connectedUsers) {
     userList.push(
       <div key={key} className={"p-2 flex flex-row justify-between"}>

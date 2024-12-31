@@ -3,6 +3,8 @@ import { useState } from "react";
 import supabase from "../lib/supabase";
 import InputField from "./InputField";
 import DefaultButton from "./DefaultButton";
+import { logError, logInfo } from "../lib/logging";
+import toast from "react-hot-toast";
 
 const RenameFile = ({ item, updateName }) => {
   const [newName, setNewName] = useState(item.name);
@@ -15,10 +17,12 @@ const RenameFile = ({ item, updateName }) => {
         .update({ name: newName })
         .eq("id", item.id)
         .select("name");
-      if (error) console.log("doc name updation error: ", error);
-      else {
+      if (error) {
+        logError("doc name updation error: ", error);
+        toast.error("Error in renaming file, Please try again.");
+      } else {
         updateName(data[0]?.name);
-        console.log("doc name successfully updated");
+        logInfo("doc name successfully updated");
       }
     };
     renameFile();

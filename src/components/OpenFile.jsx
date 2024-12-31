@@ -9,6 +9,7 @@ import RenameFile from "./RenameFile";
 import DeleteConfirmation from "./DeleteConfirmation";
 import PopupBox from "./PopupBox";
 import Loader from "./Loader";
+import { logError, logInfo } from "../lib/logging";
 
 const OpenFile = ({ close }) => {
   const [userFiles, setUserFiles] = useState(null);
@@ -30,7 +31,7 @@ const OpenFile = ({ close }) => {
         .delete()
         .eq("id", item.current.id);
       if (response.status >= 200) {
-        console.log(item.current.name + " Deleted");
+        logInfo(item.current.name + " Deleted");
         setUserFiles((list) => {
           const newList = [];
           for (const index in list) {
@@ -44,7 +45,10 @@ const OpenFile = ({ close }) => {
         });
         if (item.current.id === docId) setDocId(defaultDocId.current);
         toast.success("File deleted successfully");
-      } else console.log("Error deleting ", item.current.name);
+      } else {
+        logError("Error deleting ", item.current.name);
+        toast.error("Error in deleting file, Please try again");
+      }
     };
     if (confirm) deleteFile();
     setDeleteFileOpen(false);
@@ -118,9 +122,11 @@ const OpenFile = ({ close }) => {
         .select("id, name, user_docs!inner(is_default)")
         .eq("user_docs.user_id", user_id);
 
-      if (error) console.log("fetch files error: ", error);
-      else {
-        console.log("fetched files: ", data);
+      if (error) {
+        logError("fetch files error: ", error);
+        toast.error("Error in fetching files, Please try again.");
+      } else {
+        logInfo("fetched files: ", data);
         setUserFiles(data);
       }
       setLoading(false);

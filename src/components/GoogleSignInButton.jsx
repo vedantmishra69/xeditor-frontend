@@ -1,4 +1,5 @@
 import { useAuthContext } from "../contexts/AuthContext";
+import { logError, logInfo } from "../lib/logging";
 import supabase from "../lib/supabase";
 
 const GoogleSignInButton = () => {
@@ -9,9 +10,9 @@ const GoogleSignInButton = () => {
       const { data, error } = await supabase.rpc("delete_user", {
         user_id: userData?.id,
       });
-      if (error) console.log("Error deleting user: ", error);
+      if (error) logError("Error deleting user: ", error);
       else {
-        console.log("User deleted successfully: ", data);
+        logInfo("User deleted successfully: ", data);
         await handleSignInWithGoogleCustom();
       }
     };

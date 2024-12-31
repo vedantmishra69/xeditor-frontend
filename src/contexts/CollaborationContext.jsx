@@ -10,7 +10,8 @@ import { useAuthContext } from "./AuthContext";
 import supabase from "../lib/supabase";
 import * as Y from "yjs";
 import { IndexeddbPersistence } from "y-indexeddb";
-import { logInfo } from "../lib/logging";
+import { logError, logInfo } from "../lib/logging";
+import toast from "react-hot-toast";
 
 const Context = createContext();
 
@@ -32,22 +33,26 @@ const CollaborationContext = ({ children }) => {
       const { data, error } = await supabase
         .from("doc_public_info")
         .upsert({ id: doc_Id }, { onConflict: "id", ignoreDuplicates: true });
-      if (error) console.log("upsert doc info error: ", error);
-      else {
-        console.log("doc info upserted: ", data);
+      if (error) {
+        logError("upsert doc info error: ", error);
+        toast.error("Error in doc fetching, Please try again");
+      } else {
+        logInfo("doc info upserted: ", data);
         setDocId(doc_Id);
       }
     };
     const fetchDocId = async (user_id) => {
-      console.log("in fetchDocId: ", session.user.id);
+      logInfo("in fetchDocId with user id: ", session.user.id);
       const { data, error } = await supabase
         .from("user_docs")
         .select("id")
         .eq("user_id", user_id)
         .eq("is_default", true);
-      if (error) console.log("doc check error: ", error);
-      else if (data?.length) {
-        console.log("doc check data: ", data);
+      if (error) {
+        logError("doc check error: ", error);
+        toast.error("Error in doc fetching, Please try again");
+      } else if (data?.length) {
+        logInfo("doc check data: ", data);
         setDocId(data[0]?.id);
       } else {
         const { data, error } = await supabase
@@ -57,9 +62,11 @@ const CollaborationContext = ({ children }) => {
             y_doc: DEFAULT_CODE_BUFFER,
           })
           .select("id");
-        if (error) console.log("doc insert error: ", error);
-        else if (data) {
-          console.log("doc inserted: ", data);
+        if (error) {
+          logError("doc insert error: ", error);
+          toast.error("Error in doc fetching, Please try again");
+        } else if (data) {
+          logInfo("doc inserted: ", data);
           await upsertDocInfo(data[0]?.id);
         }
       }
@@ -85,7 +92,7 @@ const CollaborationContext = ({ children }) => {
         "xeditor-default",
         ydoc.current
       );
-      offlineProvider.on("synced", () => console.log("OFFLINE PROVIDER SET"));
+      offlineProvider.on("synced", () => logInfo("OFFLINE PERSISTENCE SET"));
     }
     setProvider(provider);
     setAwareness(provider.awareness);
@@ -102,9 +109,11 @@ const CollaborationContext = ({ children }) => {
         .from("doc_public_info")
         .select("language,name")
         .eq("id", docId);
-      if (error) console.log("language fetch error: ", error);
-      else if (data?.[0]?.language) {
-        console.log("language fetch: ", data);
+      if (error) {
+        logError("file info fetch error: ", error);
+        toast.error("Error in fetching file details, Please try again.");
+      } else if (data?.[0]?.language) {
+        logInfo("language fetch: ", data);
         setLanguage(data[0]?.language);
         setCurrentFileName(data[0]?.name);
       }
@@ -122,7 +131,7 @@ const CollaborationContext = ({ children }) => {
 
   useEffect(() => {
     if (!awareness) return;
-    console.log("AWARENESS SET");
+    logInfo("AWARENESS SET");
     const stateMap = awareness.getStates();
 
     awareness.on("update", () => {

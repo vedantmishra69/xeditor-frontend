@@ -10,6 +10,7 @@ import DropDownMenuButton from "./DropDownMenuButton";
 import DefaultButton from "./DefaultButton";
 import { Minus, Plus } from "lucide-react";
 import { useStatesContext } from "../contexts/StatesContext";
+import { logError, logInfo } from "../lib/logging";
 
 const Settings = ({ close }) => {
   const [userSettings, setUserSettings] = useState(true);
@@ -28,8 +29,10 @@ const Settings = ({ close }) => {
       close();
       setMainLoading(true);
       const { error } = await supabase.auth.signOut();
-      if (error) console.log("error signing out: ", error);
-      else {
+      if (error) {
+        logError("error signing out: ", error);
+        toast.error("Error signing out.");
+      } else {
         toast.success("Signed out successfully");
         clearConnectionsAndOpenDefault();
       }
@@ -54,9 +57,11 @@ const Settings = ({ close }) => {
       .update(newData)
       .eq("id", userData.id)
       .select();
-    if (error) console.log(error);
-    else {
-      console.log(data);
+    if (error) {
+      logError(error);
+      toast.error("Error in saving settings, Please try again.");
+    } else {
+      logInfo(data);
       setUserData(data[0]);
       toast.success("Changes applied successfully");
       close();
