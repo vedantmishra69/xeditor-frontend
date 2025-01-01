@@ -109,7 +109,7 @@ const JoinWindow = ({ close }) => {
           <InputField
             value={joinToken}
             onChange={handleJoinToken}
-            placeholder="Enter invote token here..."
+            placeholder="Enter invite token here..."
             style={{
               flex: "1 1 0%",
             }}
