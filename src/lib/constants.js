@@ -1,6 +1,6 @@
 export const api = import.meta.env.VITE_BACKEND_API;
-export const API_URL = `https://${api}`;
-export const SOCKET_URL = `wss://${api}`;
+export const API_URL = `http://${api}`;
+export const SOCKET_URL = `ws://${api}`;
 export const DEFAULT_LANGUAGE = "Python (3.8.1)";
 export const DEFAULT_CODE = "";
 export const DEFAULT_THEME = "Dracula";

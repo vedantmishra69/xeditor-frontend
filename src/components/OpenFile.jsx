@@ -85,7 +85,7 @@ const OpenFile = ({ close }) => {
           className="flex-1"
           onClick={() => {
             setIsDefaultDoc(obj.user_docs.is_default);
-            clearConnectionsAndOpen(obj.id);
+            if (obj.id !== docId) clearConnectionsAndOpen(obj.id);
             close();
           }}
         >
