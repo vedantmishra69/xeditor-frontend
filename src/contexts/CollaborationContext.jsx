@@ -114,7 +114,7 @@ const CollaborationContext = ({ children }) => {
         logError("file info fetch error: ", error);
         toast.error("Error in fetching file details, Please try again.");
       } else if (data?.[0]?.language) {
-        logInfo("language fetch: ", data);
+        logInfo("language and name fetch: ", data);
         setLanguage(data[0]?.language);
         setCurrentFileName(data[0]?.name);
       }

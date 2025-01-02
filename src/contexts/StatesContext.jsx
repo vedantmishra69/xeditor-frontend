@@ -81,9 +81,9 @@ const StatesContext = ({ children }) => {
   };
 
   const clearConnectionsAndOpen = (docId) => {
+    clearConnections();
     setDocId(docId);
     setJoined(false);
-    clearConnections();
   };
 
   const clearChat = () => setMessageList([]);

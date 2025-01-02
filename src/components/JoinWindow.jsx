@@ -10,14 +10,17 @@ import { useStatesContext } from "../contexts/StatesContext";
 import Loader from "./Loader";
 import EmptyPlaceholder from "./EmptyPlaceholder";
 import { logError, logInfo } from "../lib/logging";
+import { useCollabContext } from "../contexts/CollaborationContext";
 
 const JoinWindow = ({ close }) => {
   const [joinToken, setJoinToken] = useState("");
   const [joinHistory, setJoinHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const { userData } = useAuthContext();
-  const { clearConnectionsAndJoin } = useStatesContext();
+  const { clearConnectionsAndJoin, clearConnectionsAndOpen } =
+    useStatesContext();
   const { setMainLoading } = useStatesContext();
+  const { docId } = useCollabContext();
 
   const joinHistoryList = joinHistory?.map((item, index) => (
     <div
@@ -62,9 +65,14 @@ const JoinWindow = ({ close }) => {
         .single();
       if (data) {
         logInfo("doc id is valid: ", data);
-        await updateJoinHistory(data.id, data.user_id);
-        clearConnectionsAndJoin(doc_id);
-        toast.success("Room joined successfully.");
+        if (data.user_id === userData?.id) {
+          if (doc_id !== docId) clearConnectionsAndOpen(doc_id);
+          toast.success("You are the owner of this room.");
+        } else {
+          await updateJoinHistory(data.id, data.user_id);
+          clearConnectionsAndJoin(doc_id);
+          toast.success("Room joined successfully.");
+        }
       } else {
         toast.error("Invalid join token.");
         logError("document don't exist: ", joinToken, error);

@@ -10,12 +10,14 @@ import DeleteConfirmation from "./DeleteConfirmation";
 import PopupBox from "./PopupBox";
 import Loader from "./Loader";
 import { logError, logInfo } from "../lib/logging";
+import { useStatesContext } from "../contexts/StatesContext";
 
 const OpenFile = ({ close }) => {
   const [userFiles, setUserFiles] = useState(null);
-  const { setDocId, setIsDefaultDoc, setCurrentFileName, docId, setJoined } =
-    useCollabContext();
+  const { setIsDefaultDoc, setCurrentFileName, docId } = useCollabContext();
   const { userData } = useAuthContext();
+  const { clearConnectionsAndOpenDefault, clearConnectionsAndOpen } =
+    useStatesContext();
   const item = useRef(null);
   const currentIndex = useRef(null);
   const defaultDocId = useRef(null);
@@ -43,7 +45,7 @@ const OpenFile = ({ close }) => {
           }
           return newList;
         });
-        if (item.current.id === docId) setDocId(defaultDocId.current);
+        if (item.current.id === docId) clearConnectionsAndOpenDefault();
         toast.success("File deleted successfully");
       } else {
         logError("Error deleting ", item.current.name);
@@ -82,9 +84,8 @@ const OpenFile = ({ close }) => {
         <div
           className="flex-1"
           onClick={() => {
-            setDocId(obj.id);
             setIsDefaultDoc(obj.user_docs.is_default);
-            setJoined(false);
+            clearConnectionsAndOpen(obj.id);
             close();
           }}
         >

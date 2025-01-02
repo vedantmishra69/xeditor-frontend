@@ -139,7 +139,7 @@ export const copyToClipboard = async (text) => {
     await navigator.clipboard.writeText(text);
     return { message: "Invite token copied to clipboard!" };
   } catch (err) {
-    console.err(err);
+    logError(err);
     return { message: "Copying failed, please try again." };
   }
 };
