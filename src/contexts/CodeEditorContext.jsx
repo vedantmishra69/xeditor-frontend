@@ -5,7 +5,6 @@ import {
   DEFAULT_CODE,
   DEFAULT_LANGUAGE,
   STATUS_MAPPING,
-  THEME_LIST,
 } from "../lib/constants";
 import { fetchResult, getThemeName, submitCode } from "../lib/util";
 import { useAuthContext } from "./AuthContext";
@@ -66,29 +65,6 @@ export const CodeEditorContext = ({ children }) => {
       } else toast.error("Unable to submit.");
     }
   };
-
-  // useEffect(() => {
-  //   if (!monaco || !userData) return;
-  //   const defineThemes = async () => {
-  //     for (const theme in THEME_LIST) {
-  //       const data = await import(`../lib/themes/${THEME_LIST[theme]}.json`);
-  //       monaco.editor.defineTheme(getThemeName(THEME_LIST[theme]), data);
-  //     }
-  //     monaco.editor.setTheme(getThemeName(userData.theme));
-  //   };
-  //   defineThemes();
-  // }, [monaco, userData]);
-
-  useEffect(() => {
-    if (!monaco) return;
-    const defineThemes = async () => {
-      for (const theme in THEME_LIST) {
-        const data = await import(`../lib/themes/${THEME_LIST[theme]}.json`);
-        monaco.editor.defineTheme(getThemeName(THEME_LIST[theme]), data);
-      }
-    };
-    defineThemes();
-  }, [monaco]);
 
   useEffect(() => {
     if (!monaco || !userData?.theme) return;
