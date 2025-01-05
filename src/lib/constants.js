@@ -1,4 +1,4 @@
-export const api = "xeditor.dev/api"; //localhost:8000
+export const api = "api.xeditor.dev"; //localhost:8000
 export const API_URL = `https://${api}`;
 export const SOCKET_URL = `wss://${api}`;
 export const DEFAULT_LANGUAGE = "Python (3.8.1)";
