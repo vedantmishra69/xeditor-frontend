@@ -1,5 +1,6 @@
 import { Toaster } from "react-hot-toast";
 import "./App.css";
+import { Analytics } from "@vercel/analytics/react";
 import CodeEditorContext from "./contexts/CodeEditorContext";
 import CollaborationContext from "./contexts/CollaborationContext";
 import CodeEditorPage from "./pages/CodeEditorPage";
@@ -12,6 +13,7 @@ import StatesContext from "./contexts/StatesContext";
 function App() {
   return (
     <>
+      <Analytics />
       <div>
         <Toaster
           position="bottom-left"
