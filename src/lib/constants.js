@@ -1,4 +1,4 @@
-export const api = import.meta.env.VITE_BACKEND_API;
+export const api = "xeditor.dev/api"; //localhost:8000
 export const API_URL = `https://${api}`;
 export const SOCKET_URL = `wss://${api}`;
 export const DEFAULT_LANGUAGE = "Python (3.8.1)";
@@ -7,9 +7,11 @@ export const DEFAULT_THEME = "Dracula";
 export const DEFAULT_TAB_SIZE = 4;
 export const DEFAULT_FONT_SIZE = 18;
 export const DEFAULT_WORD_WRAP = true;
-export const SUPABASE_PROJECT_URL = import.meta.env.VITE_SUPABASE_PROJECT_URL;
-export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
-export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+export const SUPABASE_PROJECT_URL = "https://krazjhqzqqlbkvyilfkd.supabase.co";
+export const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtyYXpqaHF6cXFsYmt2eWlsZmtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAwODkwNjQsImV4cCI6MjA0NTY2NTA2NH0.Hf18lTwwSavQvMePDroD7BR6alS9AVNzQ1Fvx9Y1Lss";
+export const GOOGLE_CLIENT_ID =
+  "232593721299-a4s7mbnvceusicttu50pqn563er26a16.apps.googleusercontent.com";
 export const LANGUAGE_MAPPING = {
   "C (Clang 7.0.1)": {
     id: 75,
